@@ -5,9 +5,9 @@ Config.set('graphics', 'height', '768')
 Config.set('graphics', 'minimum_width', '1366')
 Config.set('graphics', 'minimum_height', '768')
 Config.set('input', 'mouse', 'mouse,multitouch_on_demand')
+Config.set('kivy', 'keyboard_mode', 'system')
 
-#Comps
-import kivymd
+#Comps needet for Building Exe
 from kivy.uix.filechooser import FileChooserIconView
 from kivymd.icon_definitions import md_icons
 from kivymd.uix.card import MDCard
@@ -22,9 +22,9 @@ from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
 from kivy.properties import ObjectProperty, NumericProperty, StringProperty
 from kivymd.app import MDApp
 from kivymd.uix.list import OneLineListItem, ImageRightWidget, ThreeLineRightIconListItem
-
-
 import win32timezone
+#### 
+
 import os
 from Backend.CopyToClipBoard import CopyToClipBoard
 from Backend.Password_Generator import Password_Generator
@@ -337,9 +337,13 @@ class MainScreen(Screen):
     def on_enterChangenamePopup(self, textfield):
         self.changePlatformNamePopup_textfield = textfield
         if textfield.text != "":
+            
             self.lbPlatformName.text = textfield.text[0:27]
             textfield.text = ""
             self.changePlatformNamePopup.dismiss()
+            if not self.hasItemSelectet:
+                self.add_save_changes()
+    
 
     def SaveingWarningPopup(self, which=""):
         self.whichSavePopup = which
@@ -638,6 +642,8 @@ class MainScreen(Screen):
 
             else:
                 print("UI: Enter a Title")
+                self.ChangenamePopup("")
+
 
     def deleteindex(self):
 
@@ -826,7 +832,6 @@ class ScreensApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         m = Manager(transition=NoTransition())
         return m
-
 
 if __name__ == "__main__":
     ScreensApp().run()
