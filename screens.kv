@@ -206,81 +206,112 @@
 
     user:user
     password:password
+    bt_forgotpassword:bt_forgotpassword
+    cb_rememberme:cb_rememberme
+
 
     MDCard:
         size_hint: None, None
-        size: 300, 400
+        size: 300, 425
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
         elevation: 10
-        padding: 25
-        spacing: 25
+        #padding: 25
+        #spacing: 25
         orientation: 'vertical'
+        BoxLayout:
+            pos_hint: {"center_x": 0.5, "center_y": 0.5}
+            orientation: 'vertical'
+            #padding: 25
+            spacing: 25
+            MDLabel:
+                id: welcome_label
+                text: "Login"
+                font_size: 40
+                halign: 'center'
+                size_hint_y: None
+                height: self.texture_size[1]
+                padding_y: 15
 
-        MDLabel:
-            id: welcome_label
-            text: "Login"
-            font_size: 40
-            halign: 'center'
-            size_hint_y: None
-            height: self.texture_size[1]
-            padding_y: 15
+            MDTextField:
+                id: user
+                mode:"round"
+                hint_text: "username"
+                helper_text: "This field is Required"
+                helper_text_mode: "on_error"
+                text_color_focus: (207/255, 244/255, 210/255, 1)
+                line_color_focus: (86/255, 197/255, 150/255, 1)
+                on_text: root.validateText()
+                on_text_validate:root.login()
+                #icon_right: "account"
+                write_tab:False
+                size_hint_x: None
+                width: 200
+                font_size: 18
+                pos_hint: {"center_x": 0.5}
 
-        MDTextField:
-            id: user
-            mode:"round"
-            hint_text: "username"
-            helper_text: "This field is Required"
-            helper_text_mode: "on_error"
-            text_color_focus: (207/255, 244/255, 210/255, 1)
-            line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validateText()
-            on_text_validate:root.login()
-            #icon_right: "account"
-            write_tab:False
-            size_hint_x: None
-            width: 200
-            font_size: 18
-            pos_hint: {"center_x": 0.5}
+            MDTextField:
+                id: password
+                mode:"round"
+                hint_text: "password"
+                write_tab:False
+                helper_text: "This field is Required"
+                helper_text_mode: "on_error"
+                text_color_focus: (207/255, 244/255, 210/255, 1)
+                line_color_focus: (86/255, 197/255, 150/255, 1)
+                on_text: root.validateText()
+                on_text_validate:root.login()
+                #icon_right: "eye-off"
+                size_hint_x: None
+                width: 200
+                font_size: 18
+                pos_hint: {"center_x": 0.5}
+                password: True
 
-        MDTextField:
-            id: password
-            mode:"round"
-            hint_text: "password"
-            write_tab:False
-            helper_text: "This field is Required"
-            helper_text_mode: "on_error"
-            text_color_focus: (207/255, 244/255, 210/255, 1)
-            line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validateText()
-            on_text_validate:root.login()
-            #icon_right: "eye-off"
-            size_hint_x: None
-            width: 200
-            font_size: 18
-            pos_hint: {"center_x": 0.5}
-            password: True
+            BoxLayout:                
+                spacing:10
+                padding:50,0,50,25
+                #pos_hint: {"center_x": 0.5}
+                AnchorLayout:
+                    size_hint:2,1
+                    MDTextButton:
+                        id: bt_forgotpassword
+                        text: "Password?"
+                        font_size: 10
+                        #text_color:(86/255, 197/255, 150/255, 1)
+                        on_press: root.forgotPassword()
+                        color: (86/255, 197/255, 150/255, 1)
+                Label:
+                    text:"      Remember Me"
+                    font_size: 10
+                CheckBox:
+                    #ID[   ]
+                    id:cb_rememberme
+                    #Design
+                    #size_hint:2,2
+                    color:(86/255, 197/255, 150/255, 1)
 
-        MDRoundFlatButton:
-            text: "LOG IN"
-            font_size: 12
-            pos_hint: {"center_x": 0.5}
-            text_color:(86/255, 197/255, 150/255, 1)
-            line_color: (86/255, 197/255, 150/255, 1)
-            on_press:
-                root.login()
 
-        MDRoundFlatButton:
-            text: "SIGN UP"
-            font_size: 12
-            pos_hint: {"center_x": 0.5}
-            text_color:(86/255, 197/255, 150/255, 1)
-            line_color: (86/255, 197/255, 150/255, 1)
-            on_press:
-                root.register()
+            MDRoundFlatButton:
+                text: "LOG IN"
+                font_size: 12
+                pos_hint: {"center_x": 0.5}
+                text_color:(86/255, 197/255, 150/255, 1)
+                line_color: (86/255, 197/255, 150/255, 1)
+                on_press:
+                    root.login()
 
-        Widget:
-            size_hint_y: None
-            height: 10
+            MDRoundFlatButton:
+                text: "SIGN UP"
+                font_size: 12
+                pos_hint: {"center_x": 0.5}
+                text_color:(86/255, 197/255, 150/255, 1)
+                line_color: (86/255, 197/255, 150/255, 1)
+                on_press:
+                    root.register()
+
+            Widget:
+                size_hint_y: None
+                height: 10
 
 
 
@@ -321,15 +352,44 @@
         BoxLayout:  
             orientation:'horizontal'
             size_hint:1,None
-            size:0,50
-    
+            size:0,100
+            #Header Spacer
+            BoxLayout:
+                size_hint: .2 , 1
+
+
             Label:
+                size_hint: 1 , 1
                 text:"Header"
                 font_size:23
+
+            #Header Buttons Right
+            BoxLayout:
+                size_hint: .1 , 1
+                orientation:'horizontal'
+                
+                MDIconButton:
+                    size_hint:.1,.8
+                    ripple_scale: 0
+                    icon:"account-circle"
+                    icon_size: "36sp"
+                    #disabled:True
+                
+                MDIconButton:
+                    size_hint:.1,.8
+                    ripple_scale: 0
+                    icon:"logout"
+                    icon_size: "36sp"
+                    on_press: root.logout()
+                    #disabled:True
+
+            
         
         #Main Content
         BoxLayout:
             orientation:'horizontal'
+            
+            
             #Left panel
             BoxLayout:
                 padding:5,5,5,5
@@ -361,25 +421,23 @@
                         size_hint:.1,1
                         icon:"shield-search"
                         disabled:True
-
-                BoxLayout:
+                AnchorLayout:
                     size_hint:1,.05
-                    spacing:25
-                    Label:
-                        text:"Sorting:"
-                        size_hint:.2 , 1
-                    MDRaisedButton:
-                        text:"  Name  "
-                        on_press:root.sortingNames()
-                        md_bg_color:(123/255, 228/255, 149/255, .2)
-                    MDRaisedButton:
-                        text:"Logo"
-                        on_press:root.sortingPlatform()
-                        md_bg_color:(123/255, 228/255, 149/255, .2)
-                    MDRaisedButton:
-                        text:" Default "
-                        on_press:root.sortingDefault()
-                        md_bg_color:(123/255, 228/255, 149/255, .2)
+                    
+                    BoxLayout:
+                        spacing:25
+                        MDRaisedButton:
+                            text:"  Name  "
+                            on_press:root.sortingNames()
+                            md_bg_color:(123/255, 228/255, 149/255, .2)
+                        MDRaisedButton:
+                            text:"Logo"
+                            on_press:root.sortingPlatform()
+                            md_bg_color:(123/255, 228/255, 149/255, .2)
+                        MDRaisedButton:
+                            text:" Default "
+                            on_press:root.sortingDefault()
+                            md_bg_color:(123/255, 228/255, 149/255, .2)
 
                 MDRecycleView:  
                     
@@ -392,7 +450,7 @@
                 orientation:"vertical"
                 #Middlepanel Header
                 BoxLayout:
-                    size_hint:1,.25
+                    size_hint:1,.4
                     orientation:"vertical"
                     padding:0,50,0,0
                     Label:
@@ -403,13 +461,15 @@
                     
                     BoxLayout:
                         AnchorLayout:
-                            anchor_x:"right"     
+                            anchor_x:"right"   
+                            anchor_y:"bottom"  
                             MDIconButton:
                                 id:btchangePlatformName
                                 icon: "pencil"
                                 on_press: root.changPlatformName()
                         AnchorLayout:
                             anchor_x:"left"
+                            anchor_y:"bottom"  
                             MDIconButton:
                                 id:btchangeimg
                                 disabled:True

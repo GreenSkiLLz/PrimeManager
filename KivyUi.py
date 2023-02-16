@@ -150,9 +150,36 @@ class Login(Screen):
         self.pm = Passwort_Manager()
         self.user = ObjectProperty(None)
         self.password = ObjectProperty(None)
+        self.bt_forgotpassword = ObjectProperty(None)
+        self.cb_rememberme = ObjectProperty(None)
+        self.lines=""
 
         # Password Manager:
         self.app = MDApp.get_running_app()
+    
+    def on_enter(self, *args):
+        if self.ids:
+            self.loadRememberme()
+        return super().on_enter(*args)
+
+
+    def on_kv_post(self, base_widget):
+        self.loadRememberme()
+
+        return super().on_kv_post(base_widget)
+    
+    def loadRememberme(self):
+        print('UI: Loading Login Page')
+        with open("Backend\\Remember.me","r") as file:
+            self.lines = file.readlines()
+        if self.lines:
+            if self.lines[0].strip() == "True":
+                self.cb_rememberme.active = True
+                self.user.text = self.lines[1]
+                print("UI: Remember Me set to True")
+            else:
+                self.cb_rememberme.active = False
+                print("UI: Remember Me set to False")
 
     def validateText(self):
         self.user.text = str(self.user.text).replace(" ", "")
@@ -167,21 +194,37 @@ class Login(Screen):
             return
 
         if self.app.pm.login(self.user.text, self.password.text):
+            self.rememberMe()
+            
             self.clearbeforeleave()
             Window.maximize()
             self.manager.current = 'mainscreen'
+        
+        #Error
         else:
             self.password.error = True
             self.password.helper_text = ("Wrong Username or Password")
             self.clearbeforeleave()
-
-        if self.user.text == "123":
-            self.password.error = True
-            self.password.helper_text = ("Wrong Username or Password")
-            self.clearbeforeleave()
             return
-
+        #Error
         return
+
+    def rememberMe(self):
+        print("UI: Remeber Me: ",self.cb_rememberme.active)
+        newlines=[]
+        if self.cb_rememberme.active:
+            newlines.append("True")
+            newlines.append(self.user.text)
+        else:
+            newlines.append("False")
+            newlines.append("")
+            
+        with open("Backend\\Remember.me","w") as file:
+            file.write(str(newlines[0]+"\n"+newlines[1]))
+
+
+    def forgotPassword(self):
+        print("UI: forgot password")
 
     def register(self):
         print("UI: register")
@@ -436,14 +479,73 @@ class MainScreen(Screen):
             self.currentItem.setIMG(path)
             print("UI: IMG Selected on ID:",self.currentItem.get("ID"),"IMG",self.currentItem.get("IMG"))
 
+
+    def logoutPopup(self):
+        print("UI: Opening Logout Popup")
+
+        content = BoxLayout(padding=(0,10,0,0))
+        content.add_widget(MDRaisedButton(
+            size_hint=(.2,.4),
+            text ="Logout",
+            md_bg_color=(123/255, 228/255, 149/255, 1),
+            text_color=(0,0,0,1),
+            on_press=self.continueLogout
+        ))
+        content.add_widget(BoxLayout(
+            size_hint=(.6,.4)
+
+        ))
+        content.add_widget(MDRaisedButton(
+            size_hint=(.2,.4),
+            text ="Cancle",
+            md_bg_color=(123/255, 228/255, 149/255, 1),
+            text_color=(0,0,0,1),
+            on_press=self.closeLoginPopup
+        ))
+
+        self.LogoutPopup = Popup(title='Logout?',
+                                            title_size=25,
+                                            content=content,
+                                            separator_color=(86 / 255, 197 / 255, 150 / 255, 1),
+                                            size_hint=(None, None),
+                                            size=(400, 200)
+                                            )
+        self.LogoutPopup.open()
+    
+    def closeLoginPopup(self,Obj=None):
+        print("UI: Canceling Logout")
+        self.LogoutPopup.dismiss()
+
+
+
     # </editor-fold>
 
+    #Event Runs once When Entering Main Page. Runs before Kv is Loaded
     def on_enter(self):
         print('UI: Creating main Page from Profile')
         self.ids.container.data = []
         self.loadListOfItems()
 
+
+    #ButtonEvent When pressing logount
+    def logout(self):
+        self.logoutPopup()
+ 
+    # After Lopgout Popup This will Called when Pressing on Logout in the Popup
+    def continueLogout(self,obj=None):
+        print("UI: Logout User")
+        self.LogoutPopup.dismiss()
+        self.app.pm.logout()
+        self.ids.container.clear_widgets()
+        self.hasItemSelectet = False
+        self.inEditMode = False
+        self.setButtonStates()
+        self.manager.current = 'login'
+
+
     # CSV:  ID;PlatformName;Username;Password;Email;SecurityKey;Telephon;Link;ImgPath
+    #This Function loads all Entries in CSV to the list on the left
+    #Calls addToListInUi()
     def loadListOfItems(self):
         loadlist = self.app.pm.getAllPasswords()
         self.maxID = len(loadlist.index)
@@ -474,12 +576,16 @@ class MainScreen(Screen):
         if self.sortingtype == "PLATFORM":
             self.sortingPlatform()
 
+    #Adds Item to list to the left
     def addToListInUi(self, widget):
         self.listItems.append(widget)
         self.ids.container.add_widget(widget)
-
+    
+    #Event when Presed the Copy Button under the Textfields
     def copyTextFromFieldToClipboard(self,textfield):
         self.copyToClipBoard.copy(textfield.text)
+    
+    #Always Updates the Search bar for All Passwords on Text Input
     def search(self):
         self.tf_search.text = str(self.tf_search.text).replace(" ", "")
 
@@ -487,7 +593,6 @@ class MainScreen(Screen):
             self.listfullyloaded = False
             self.ids.container.clear_widgets()
             for widget in self.listItems:
-                print("UI: ", widget)
                 if (str(self.tf_search.text).lower() in str(widget.get("PLATFORMNAME")).lower()
                         or str(self.tf_search.text).lower() in str(widget.get("USERNAME")).lower()
                         or str(self.tf_search.text).lower() in str(widget.get("EMAIL")).lower()):
@@ -497,7 +602,7 @@ class MainScreen(Screen):
             self.ids.container.clear_widgets()
             for widget in self.listItems:
                 self.ids.container.add_widget(widget)
-
+    #Sorting Mode Name
     def sortingNames(self):
         self.tf_search.text = ""
         self.sortingtype = "NAMES"
@@ -506,7 +611,7 @@ class MainScreen(Screen):
         for widget in self.listItemsSortName:
             self.ids.container.add_widget(widget)
         print("UI: Sorting Names")
-
+    #Sorting Mode Platform
     def sortingPlatform(self):
         self.tf_search.text = ""
         self.sortingtype = "PLATFORM"
@@ -516,7 +621,7 @@ class MainScreen(Screen):
         for widget in self.listItemsSortPlatform:
             self.ids.container.add_widget(widget)
         print("UI: Sorting Platform")
-
+    #Sorting Mode Logo/Img Name
     def sortingDefault(self):
         self.tf_search.text = ""
         self.sortingtype = ""
@@ -526,13 +631,14 @@ class MainScreen(Screen):
             self.ids.container.add_widget(widget)
         print("UI: Sorting Default")
 
+    # Get item from list on the left when filled
     def loadIndexFromScrollList(self, item):
 
         # if nothing Changed or nothing is selected Load Item
         if not self.somethingChangedOnCurrentItem or not self.hasItemSelectet:
             self.savewarningbufferitem = None
             self.currentItem = item
-            print("UI: ",self.currentItem.get("ID"))
+            print("UI: Loading Index From List",self.currentItem.get("ID"))
 
             self.inEditMode = False
             self.hasItemSelectet = True
@@ -554,6 +660,7 @@ class MainScreen(Screen):
 
     # <editor-fold desc="Right Panel Buttons">
 
+    #Start Edit Mode
     def editSelectedIndex(self):
         print("UI: EditMode")
         if self.btEdit.state == "normal":
@@ -562,6 +669,7 @@ class MainScreen(Screen):
             self.inEditMode = True
         self.setButtonStates()
 
+    #Gets Called when New Password Entry is made or You press on Save after Changin something
     def add_save_changes(self, obj=None):
         the_new_widget = ListItem()
         if obj != None:
@@ -571,7 +679,6 @@ class MainScreen(Screen):
         # If Item is Selected Save current Profile
         if self.hasItemSelectet:
             print("UI: start Saving")
-            print("UI: Saving Item Id: ",self.currentItem.get(what="IMG"))
             # Save Process: Everything Variable inside ListItem should bes aved
             self.currentItem.setPlatformName(self.lbPlatformName.text)
             self.currentItem.setUserName(self.tf_username.text)
@@ -641,12 +748,12 @@ class MainScreen(Screen):
 
 
             else:
-                print("UI: Enter a Title")
+                print("UI: Enter a Title!")
                 self.ChangenamePopup("")
 
-
+    #Deletes Selected Entry from List and CSV
     def deleteindex(self):
-
+        print("UI: Delet Index:", self.currentItem.get("ID"))
         if self.currentItem in self.listItems:
             self.app.pm.delete_password(self.currentItem.get("ID"))
 
@@ -671,7 +778,8 @@ class MainScreen(Screen):
 
         else:
             print("UI: Nothing selected")
-
+    
+    #Deselects Current selection
     def deselectindex(self):
         if not self.somethingChangedOnCurrentItem:
             self.hasItemSelectet = False
@@ -685,13 +793,14 @@ class MainScreen(Screen):
 
     # </editor-fold>
 
+    #Change Screen
     def changeScreen(self):
         if self.manager.current == 'login':
             self.manager.current = 'mainscreen'
         else:
             self.manager.current = 'login'
 
-    # Set States of Button and TextFields based on self.hasItemSelectet and self.inEditMode
+    # Set States of Button and TextFields based on self.hasItemSelectet and self.inEditMode and self.somethingChangedOnCurrentItem
     def setButtonStates(self):
 
         # If Item is Selected Deactivate Everything
@@ -779,6 +888,7 @@ class MainScreen(Screen):
 
     # <editor-fold desc="Main Panel Scoll View Editable stuff">
 
+    #When Pressed on add or The Pen Icon to Create a Name for a new Profile or change the Existing one
     def changPlatformName(self):
         if not self.hasItemSelectet:
             if self.lbPlatformName.text == "":
@@ -789,16 +899,18 @@ class MainScreen(Screen):
             if self.inEditMode:
                 self.ChangenamePopup(self.lbPlatformName.text)
 
+    #Change Image path of selected Item
     def changeImagePath(self):
         if self.hasItemSelectet:
             self.FileChosserPopup()
-
+    #Unhide Passwords when Holding down on the Eye-off Icon
     def showTextField(self, obj):
         obj.password = False
-
+    #Hide Textfields when released
     def hideTextField(self, obj):
         obj.password = True
 
+    #Looks for Changes in the Textfields and sets the self.somethingChangedOnCurrentItem flag when something changes to activate Save function
     def onTextfieldText_Change(self, obj, what):
         # If False check on a change
         if not self.somethingChangedOnCurrentItem:
