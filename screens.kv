@@ -6,6 +6,8 @@
     #(123/255, 228/255, 149/255, 1)
     #(207/255, 244/255, 210/255, 1)
 
+    #Error Color (1, 99/255, 99/255,1)
+
 #TextField Colors:
     #MDTextField:
     #    text_color_focus: '#ff0000'
@@ -212,7 +214,7 @@
 
     MDCard:
         size_hint: None, None
-        size: 300, 425
+        size: 300, 450
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
         elevation: 10
         #padding: 25
@@ -234,42 +236,58 @@
 
             MDTextField:
                 id: user
-                mode:"round"
-                hint_text: "username"
+                
+                hint_text: "Username"
+                hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
                 helper_text: "This field is Required"
                 helper_text_mode: "on_error"
+
                 text_color_focus: (207/255, 244/255, 210/255, 1)
                 line_color_focus: (86/255, 197/255, 150/255, 1)
-                on_text: root.validateText()
-                on_text_validate:root.login()
-                #icon_right: "account"
+                
                 write_tab:False
                 size_hint_x: None
                 width: 200
                 font_size: 18
                 pos_hint: {"center_x": 0.5}
+                halign: 'center'
 
-            MDTextField:
-                id: password
-                mode:"round"
-                hint_text: "password"
-                write_tab:False
-                helper_text: "This field is Required"
-                helper_text_mode: "on_error"
-                text_color_focus: (207/255, 244/255, 210/255, 1)
-                line_color_focus: (86/255, 197/255, 150/255, 1)
+
                 on_text: root.validateText()
                 on_text_validate:root.login()
-                #icon_right: "eye-off"
+                #icon_right: "account"
+                
+            # TextField Password   
+            MDTextField:
+                id: password
+                
+                hint_text: "Password"
+                hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                helper_text: "This field is Required"
+                helper_text_mode: "on_error"
+                
+                text_color_focus: (207/255, 244/255, 210/255, 1)
+                line_color_focus: (86/255, 197/255, 150/255, 1)
+                
+                write_tab:False
                 size_hint_x: None
                 width: 200
                 font_size: 18
                 pos_hint: {"center_x": 0.5}
                 password: True
-
+                halign: 'center'
+                
+                on_text: root.validateText()
+                on_text_validate:root.login()
+                
+               
             BoxLayout:                
                 spacing:10
-                padding:50,0,50,25
+                padding:50,0,50,10
                 #pos_hint: {"center_x": 0.5}
                 AnchorLayout:
                     size_hint:2,1
@@ -291,20 +309,23 @@
                     color:(86/255, 197/255, 150/255, 1)
 
 
-            MDRoundFlatButton:
+            MDRaisedButton:
                 text: "LOG IN"
                 font_size: 12
                 pos_hint: {"center_x": 0.5}
-                text_color:(86/255, 197/255, 150/255, 1)
+                md_bg_color:(86/255, 197/255, 150/255, 1)
+                text_color:(0,0,0,1)
                 line_color: (86/255, 197/255, 150/255, 1)
+                
                 on_press:
                     root.login()
 
-            MDRoundFlatButton:
+            MDRaisedButton:
                 text: "SIGN UP"
                 font_size: 12
                 pos_hint: {"center_x": 0.5}
-                text_color:(86/255, 197/255, 150/255, 1)
+                md_bg_color:(86/255, 197/255, 150/255, 1)
+                text_color:(0,0,0,1)
                 line_color: (86/255, 197/255, 150/255, 1)
                 on_press:
                     root.register()
@@ -965,86 +986,120 @@
             height: self.texture_size[1]
             padding_y: 15
 
+        #TF Username
         MDTextField:
             id: user
-            mode:"round"
-            hint_text: "username"
+            
+            hint_text: "Username"
+            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
             helper_text: ""
             helper_text_mode: "on_error"
+
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validateText()
-            #icon_right: "eye-off"
+
             write_tab:False
             size_hint_x: None
             width: 200
             font_size: 18
             pos_hint: {"center_x": 0.5}
+            halign: 'center'
 
+            on_text: root.validateText()
+            
+            
 
+        #TF Email
         MDTextField:
             id: email
-            mode:"round"
+            
             hint_text: "E-Mail"
+            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
             helper_text: ""
             helper_text_mode: "on_error"
+
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validateText()
-            #icon_right: "eye-off"
+
             write_tab:False
             size_hint_x: None
             width: 200
             font_size: 18
             pos_hint: {"center_x": 0.5}
+            halign: 'center'
 
+            on_text: root.validateText()
+
+        #TF Password
         MDTextField:
             id: password
-            mode:"round"
-            hint_text: "password"
+
+            hint_text: "Password"
+            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
             helper_text: ""
             helper_text_mode: "on_error"
+
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validateText()
-            #icon_right: "eye-off"
+
             write_tab:False
             size_hint_x: None
             width: 200
             font_size: 18
             pos_hint: {"center_x": 0.5}
             password: True
+            halign: 'center'
 
+            on_text: root.validateText()         
+
+        #TF Validate Password
         MDTextField:
             id: valpassword
-            mode:"round"
-            hint_text: "password"
+
+            hint_text: "Confirm Password"
+            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
             helper_text: ""
             helper_text_mode: "on_error"
+
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validateText()
-            #icon_right: "eye-off"
+
             write_tab:False
             size_hint_x: None
             width: 200
             font_size: 18
             pos_hint: {"center_x": 0.5}
             password: True
+            halign: 'center'
 
-        MDRoundFlatButton:
+            on_text: root.validateText()
+            
+
+        MDRaisedButton:
             text: "REGISTER"
             font_size: 12
-            text_color:(86/255, 197/255, 150/255, 1)
+            md_bg_color:(86/255, 197/255, 150/255, 1)
+            #text_color:(86/255, 197/255, 150/255, 1)
+            text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
             on_press:
                 root.register()
 
-        MDRoundFlatButton:
+        MDRaisedButton:
             text: "BACK"
             font_size: 12
-            text_color:(86/255, 197/255, 150/255, 1)
+            md_bg_color:(86/255, 197/255, 150/255, 1)
+            #text_color:(86/255, 197/255, 150/255, 1)
+            text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
             on_press:
@@ -1054,6 +1109,221 @@
             size_hint_y: None
             height: 10
 
+#Start Forgot Password
+<Tfa>
+    username:username
+
+    MDCard:
+        size_hint: None, None
+        size: 300,375
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        elevation: 10
+        padding: 25
+        spacing: 20
+        orientation: 'vertical'
+
+        MDLabel:
+            id: welcome_label
+            text: "Forgot Password"
+            font_size: 40
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 15
+
+        MDTextField:
+            id: username
+            hint_text: "Enter Username"
+            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+            helper_text: "Enter Username"
+            helper_text_mode: "on_error"
+
+            text_color_focus: (207/255, 244/255, 210/255, 1)
+            line_color_focus: (86/255, 197/255, 150/255, 1)
+
+
+            on_text: root.validateText()
+            on_text_validate:root.sendMail()
+            
+            write_tab:False
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+            password: False
+            disabled: False
+            halign: "center"
+
+
+        MDRaisedButton:
+            text: "Send Mail To User"
+            font_size: 12
+            md_bg_color:(86/255, 197/255, 150/255, 1)
+            text_color:(0,0,0,1)
+            line_color: (86/255, 197/255, 150/255, 1)
+            pos_hint: {"center_x": 0.5}
+            on_press:
+                root.sendMail()
+
+        MDRaisedButton:
+            text: "BACK"
+            font_size: 12
+            md_bg_color:(86/255, 197/255, 150/255, 1)
+            text_color:(0,0,0,1)
+            line_color: (86/255, 197/255, 150/255, 1)
+            pos_hint: {"center_x": 0.5}
+            on_press:
+                root.back()
+
+#Forgot Password New Password
+<ForgotPassword>
+
+    text_label:text_label
+    tfacode:tfacode
+    newPassword:newPassword
+    valNewPassword:valNewPassword
+    setpw:setpw
+    validation_label:validation_label
+
+    MDCard:
+        size_hint: None, None
+        size: 300,600
+        pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        elevation: 10
+        padding: 25
+        spacing: 15
+        orientation: 'vertical'
+
+        MDLabel:
+            id: welcome_label
+            text: "Reset Password"
+            font_size: 40
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+            padding_y: 15
+
+        MDLabel:
+            id: text_label
+            text: "Sent E-mail to...."
+            font_size: 12
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+        #Email Code
+        MDTextField:
+            id: tfacode
+
+            halign: 'center'
+            hint_text: "Enter Email Code"
+            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+            
+            helper_text: ""
+            helper_text_mode: "on_error"
+
+            text_color_focus: (207/255, 244/255, 210/255, 1)
+            line_color_focus: (86/255, 197/255, 150/255, 1)
+            on_text: root.validatetfa()
+            
+            #icon_right: "eye-off"
+            write_tab:False
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+            password: False
+            max_text_length: 8
+
+
+        Widget:
+            size_hint_y: None
+            height: 10
+
+        MDLabel:
+            id: validation_label
+            #text: "Code is correct Enter new Password:"
+            text: "First enter the Code"
+            font_size: 20
+            halign: 'center'
+            size_hint_y: None
+            height: self.texture_size[1]
+        
+
+
+        #Password
+        MDTextField:
+            id: newPassword
+
+            hint_text: "New Password"
+            hint_text_color_normal: (1, 99/255, 99/255,1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+            helper_text: ""
+            helper_text_mode: "on_error"
+
+            text_color_focus: (207/255, 244/255, 210/255, 1)
+            line_color_focus: (86/255, 197/255, 150/255, 1)
+
+            write_tab:False
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+            password: True
+            disabled:True
+
+            on_text: root.validateText(self)
+            
+            
+        #Confirm Password
+        MDTextField:
+            id: valNewPassword
+            
+            hint_text: " Repeat Password"
+            hint_text_color_normal: (1, 99/255, 99/255,1)
+            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+            helper_text: ""
+            helper_text_mode: "on_error"
+
+            text_color_focus: (207/255, 244/255, 210/255, 1)
+            line_color_focus: (86/255, 197/255, 150/255, 1)
+
+            write_tab:False
+            size_hint_x: None
+            width: 200
+            font_size: 18
+            pos_hint: {"center_x": 0.5}
+            password: True
+            disabled: True
+
+            on_text: root.validateText(self)
+            
+        MDRaisedButton:
+            id:setpw
+            text: "Set new Password"
+            font_size: 12
+            md_bg_color:(86/255, 197/255, 150/255, 1)
+            text_color:(0,0,0,1)
+            line_color: (86/255, 197/255, 150/255, 1)
+            pos_hint: {"center_x": 0.5}
+            disabled:True
+            on_press:
+                root.setNewPassword()
+
+        MDRaisedButton:
+            text: "BACK"
+            font_size: 12
+            md_bg_color:(86/255, 197/255, 150/255, 1)
+            text_color:(0,0,0,1)
+            line_color: (86/255, 197/255, 150/255, 1)
+            pos_hint: {"center_x": 0.5}
+            on_press:
+                root.back()
 
 
 <Manager>:
@@ -1062,6 +1332,8 @@
     login: login
     mainscreen: mainscreen
     register:register
+    forgotpassword:forgotpassword
+    tfa:tfa
 
     Login:
         id: login
@@ -1076,4 +1348,13 @@
     Register:
         id:register
         name:"register"
+        manager:screen_manager
+
+    ForgotPassword:
+        id: forgotpassword
+        name:"forgotpassword"
+        manager:screen_manager
+    Tfa:
+        id: tfa
+        name:"tfa"
         manager:screen_manager

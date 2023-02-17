@@ -225,6 +225,8 @@ class Login(Screen):
 
     def forgotPassword(self):
         print("UI: forgot password")
+        self.clearbeforeleave()
+        self.manager.current = 'tfa'
 
     def register(self):
         print("UI: register")
@@ -302,6 +304,119 @@ class Register(Screen):
         self.password.text = ""
         self.valpassword.text = ""
 
+#Step 2 TFA
+class ForgotPassword(Screen):
+    def __init__(self, **kwargs):
+        super(ForgotPassword, self).__init__(**kwargs)
+        
+        self.app = MDApp.get_running_app()
+
+        self.text_label=ObjectProperty(None)
+        self.tfacode=ObjectProperty(None)
+        self.newPassword=ObjectProperty(None)
+        self.valNewPassword=ObjectProperty(None)
+        self.validation_label = ObjectProperty(None)
+        self.setpw = ObjectProperty(None)
+    
+    def clearbeforeleave(self):
+        self.app.pm.forgottPassword_Cancle()
+        self.tfacode.text = ""
+        self.newPassword.text = ""
+        self.valNewPassword.text = ""
+        self.validation_label.text = "First enter the Code"
+        self.setpw.disabled = True
+        self.newPassword.disabled = True
+        self.valNewPassword.disabled = True
+        self.newPassword.hint_text_color_normal = [1, 99/255, 99/255,1]
+        self.valNewPassword.hint_text_color_normal = [1, 99/255, 99/255,1]
+
+
+    def validateText(self, obj):
+        obj.text = str(obj.text).replace(" ","")
+
+    def validatetfa(self):
+        if len(self.tfacode.text) < 8:
+            self.validation_label.text = "First enter the Code"
+            self.newPassword.disabled = True
+            self.valNewPassword.disabled = True
+            self.newPassword.hint_text_color_normal = [1, 99/255, 99/255,1]
+            self.valNewPassword.hint_text_color_normal = [1, 99/255, 99/255,1]
+
+            self.setpw.disabled = True
+
+        self.tfacode.text = str(self.tfacode.text).replace(" ","")
+
+        if(len(self.tfacode.text)==8):
+            if self.app.pm.forgottPassword_Compare(self.tfacode.text):
+                self.validation_label.text = "Set new Password:"
+                self.newPassword.disabled = False
+                self.valNewPassword.disabled = False
+                self.newPassword.hint_text_color_normal = [86/255, 197/255, 150/255, 1]
+                self.valNewPassword.hint_text_color_normal = [86/255, 197/255, 150/255, 1]
+
+                self.setpw.disabled = False
+                print("Correct Code")
+            else:
+                print("Wrong Code")
+                self.tfacode.error=True
+                self.tfacode.helper_text=("WRONG CODE")
+                self.validation_label.text = "Code is WRONG!"
+                self.newPassword.disabled = True
+                self.valNewPassword.disabled = True
+                self.newPassword.hint_text_color_normal = [1, 99/255, 99/255,1]
+                self.valNewPassword.hint_text_color_normal = [1, 99/255, 99/255,1]
+
+                self.setpw.disabled = True
+    
+    def setNewPassword(self):
+        
+        if len(self.newPassword.text)==0:
+            self.newPassword.error =True
+            self.newPassword.helper_text=("Can't be empty")
+            return
+        
+        if self.newPassword.text == self.valNewPassword.text:
+            print("set Password")
+        else:
+            self.valNewPassword.error =True
+            self.valNewPassword.helper_text=("Passwords are not the same")
+            return
+        
+
+    def back(self):
+        self.clearbeforeleave()
+        self.manager.current = 'login'
+
+
+
+#Step 1 TFA
+class Tfa(Screen):
+    def __init__(self, **kwargs):
+        super(Tfa, self).__init__(**kwargs)
+
+        self.app = MDApp.get_running_app()
+
+        self.username = ObjectProperty(None)
+
+
+    def validateText(self):
+        self.username.text = str(self.username.text).replace(" ","")
+
+    def sendMail(self):
+
+        if self.app.pm.forgottPassword_Step1(self.username.text):
+            self.username.text=""
+            self.app.pm.forgottPassword_Step2()
+            self.manager.current = 'forgotpassword'
+        else:
+            self.username.error = True
+            self.username.helper_text = ("No User found with this Name")
+    
+    def back(self):
+        self.username.text=""
+        self.manager.current = 'login'
+
+
 
 class MainScreen(Screen):
 
@@ -333,8 +448,12 @@ class MainScreen(Screen):
         self.tf_link = ObjectProperty(None)
         self.show_password = ObjectProperty(None)
         self.show_secKey = ObjectProperty(None)
+        # Password Manager
+        self.app = MDApp.get_running_app()
+        self.enterInit()
 
-        # InternStuff
+    # InternStuff
+    def enterInit(self):
         self.generatePasswordPopup = GeneratePasswordPopup_Pop(self.setgeneratedpassword)
         self.fileChooserPopup = FilechooserPopup(self.chooseFileFileChosserPopup, os.path.abspath(os.getcwd()))
 
@@ -350,8 +469,7 @@ class MainScreen(Screen):
 
         self.maxID = 1
 
-        # Password Manager
-        self.app = MDApp.get_running_app()
+        
 
     # <editor-fold desc="Popups">
     def ChangenamePopup(self, text):
@@ -523,6 +641,7 @@ class MainScreen(Screen):
     #Event Runs once When Entering Main Page. Runs before Kv is Loaded
     def on_enter(self):
         print('UI: Creating main Page from Profile')
+        self.enterInit()
         self.ids.container.data = []
         self.loadListOfItems()
 
@@ -933,6 +1052,8 @@ class Manager(ScreenManager):
     login = ObjectProperty(None)
     mainscreen = ObjectProperty(None)
     register = ObjectProperty(None)
+    forgotpassword = ObjectProperty(None)
+    tfa = ObjectProperty(None)
 
 
 class ScreensApp(MDApp):

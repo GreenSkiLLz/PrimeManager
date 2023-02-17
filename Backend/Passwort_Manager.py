@@ -1,6 +1,7 @@
 import random
 import pandas as pd
 from cryptography.fernet import Fernet
+import time
 import os
 
 
@@ -18,8 +19,10 @@ class Passwort_Manager:
         self.UserDirPath=str(os.path.dirname( __file__ )+"\\User")
 
         self.CSVasList= pd
-        
 
+
+        self.tfaUser=""
+        self.currenttfaCode=""
 
     def __loadKey(self):
         self.key=""
@@ -40,6 +43,30 @@ class Passwort_Manager:
                 return True
         return False
     
+    
+    #Find User for TFA
+    def forgottPassword_Step1(self,userName):
+        if self.__checkUserexistence(userName):
+            self.tfaUser = userName
+            return True
+        return False
+
+    #Generate Code and send Per Email
+    def forgottPassword_Step2(self):
+        random.seed(time.process_time())
+        tfacode=[random.randrange(10) for i in range(8)]
+        self.currenttfaCode = "".join(str(e) for e in tfacode)
+        print(self.currenttfaCode)
+    #Compare Codes
+    def forgottPassword_Compare(self,code):
+        if(self.currenttfaCode == code):
+            return True
+        return False
+    #Cancle TFA and delete Code
+    def forgottPassword_Cancle(self):
+        print("PWM: Cancle TFA")
+        self.currenttfaCode=""
+
 
     #Call to Login
     def login(self, username,password):
@@ -77,6 +104,8 @@ class Passwort_Manager:
         self.userFileName=""
         self.key=""
         self.fernetObj=""
+        
+        self.tfaUser =""
 
     #Call to Register
     def registerNewUser(self, userName, password,email):
