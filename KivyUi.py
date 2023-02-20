@@ -304,6 +304,12 @@ class Register(Screen):
         self.password.text = ""
         self.valpassword.text = ""
 
+        self.user.error = False
+        self.user.error = False
+        self.email.error = False
+        self.password.error = False
+        self.valpassword.error = False
+
 #Step 2 TFA
 class ForgotPassword(Screen):
     def __init__(self, **kwargs):
@@ -318,6 +324,12 @@ class ForgotPassword(Screen):
         self.validation_label = ObjectProperty(None)
         self.setpw = ObjectProperty(None)
     
+    def on_enter(self):
+        email = self.app.pm.forgottPassword_Step2()
+        if email != None:
+            self.text_label.text = str("Sent E-mail to\n"+email+"!")
+
+
     def clearbeforeleave(self):
         self.app.pm.forgottPassword_Cancle()
         self.tfacode.text = ""
@@ -376,7 +388,8 @@ class ForgotPassword(Screen):
             return
         
         if self.newPassword.text == self.valNewPassword.text:
-            print("set Password")
+            self.app.pm.forgottPassword_setPW(self.newPassword.text)
+            self.back()
         else:
             self.valNewPassword.error =True
             self.valNewPassword.helper_text=("Passwords are not the same")
@@ -406,7 +419,6 @@ class Tfa(Screen):
 
         if self.app.pm.forgottPassword_Step1(self.username.text):
             self.username.text=""
-            self.app.pm.forgottPassword_Step2()
             self.manager.current = 'forgotpassword'
         else:
             self.username.error = True

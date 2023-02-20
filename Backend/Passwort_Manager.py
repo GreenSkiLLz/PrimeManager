@@ -3,6 +3,7 @@ import pandas as pd
 from cryptography.fernet import Fernet
 import time
 import os
+import threading
 
 
 class Passwort_Manager:
@@ -51,12 +52,22 @@ class Passwort_Manager:
             return True
         return False
 
-    #Generate Code and send Per Email
+    #Generate Code and send call EmailThread start Function
     def forgottPassword_Step2(self):
         random.seed(time.process_time())
         tfacode=[random.randrange(10) for i in range(8)]
         self.currenttfaCode = "".join(str(e) for e in tfacode)
         print(self.currenttfaCode)
+        email = self.__forgottPassword_GetEmail()
+        self.__forgottPassword_EmailThread(self.currenttfaCode,email)
+        return email
+
+    def forgottPassword_setPW(self,newpw):
+        Password_ = self.fernetObj.encrypt(bytes(newpw, encoding="utf-8")).decode()
+        self.CSVasList.loc[0]["Password"] = Password_
+        self.__WriteCSV()
+        self.logout()
+
     #Compare Codes
     def forgottPassword_Compare(self,code):
         if(self.currenttfaCode == code):
@@ -66,6 +77,52 @@ class Passwort_Manager:
     def forgottPassword_Cancle(self):
         print("PWM: Cancle TFA")
         self.currenttfaCode=""
+        self.logout()
+
+    #Start EMail Thread and Send Code
+    def __forgottPassword_EmailThread(self,code,email):
+        # args: pwd, recipient, code
+        recipient = email
+        t1 =threading.Thread(target= self.send_TFA, args=["zvwfcfudbjqqouam",recipient,code])
+        t1.start()
+    
+    # Gets called before EmailThread is started
+    def __forgottPassword_GetEmail(self):
+        self.__setUserSeed(self.tfaUser)
+        self.__setFernetobj()
+        self.__readCSVAndSetCSVlist()
+        email = self.fernetObj.decrypt(self.CSVasList.loc[0]["Email"]).decode()
+        return email
+
+    #Actual Thread
+    def send_TFA(self, pwd, recipient, code):
+        import smtplib
+        user = "infoprimemanager@gmail.com"
+        text = str("Here is you requested Code to reset your Password:\n\n\t"+code+
+                "\n\nIf you did not requiest this code, you can safely ignore this E-Mail\n"+
+                "Your Password can't be changed without this code!\n\n"+
+                "Kind regards,\nYour Prime Manager\n\n\n-This E-Mail was generated automatically, please do NOT Reply."
+                )
+        
+        FROM = user
+        TO = recipient if isinstance(recipient, list) else [recipient]
+        SUBJECT = "Prime Manager, reset your Password"
+        TEXT = text
+        # Prepare actual message
+        message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+        """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.ehlo()
+            server.starttls()
+            server.login(user, pwd)
+            server.sendmail(FROM, TO, message)
+            server.close()
+            print ('successfully sent the mail')
+        except:
+            print ("failed to send mail")
+
+
 
 
     #Call to Login
@@ -104,6 +161,7 @@ class Passwort_Manager:
         self.userFileName=""
         self.key=""
         self.fernetObj=""
+        self.CSVasList=""
         
         self.tfaUser =""
 
@@ -205,7 +263,7 @@ class Passwort_Manager:
                 imgPath_ = self.fernetObj.encrypt(bytes(imgPath, encoding="utf-8")).decode()
                 self.CSVasList.loc[_id] = [platform_,userName_,Password_,eMail_,securityKey_,telephon_,link_,imgPath_]
                 self.__WriteCSV()
-                print("PWM: new IMGPath: ",self.translate(self.CSVasList.loc[_id]["ImgPath"]))
+                #print("PWM: new IMGPath: ",self.translate(self.CSVasList.loc[_id]["ImgPath"]))
 
     #Call to get Password from ID
     #Not Used in KivyUI

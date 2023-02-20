@@ -24,22 +24,40 @@
 
 
 <FilechooserPopup@Popup>
+    #Main Popup Settings
     title:""
     title_size:25
     separator_color:(86 / 255, 197 / 255, 150 / 255, 1)
     size_hint:(None, None)
     size:(1000, 700)
 
+    #Main FileFilechooserPopup Container
     BoxLayout:
         orientation:"vertical"
+        
+        #Preview Img
         Image:
+            #ID[    ]
             id:img
+
+            #DESIGN
             size_hint:1,.3
+
+            #IMG Path
             source:"Img\\sicher.png"
+
+        #File Chooser View
         FileChooserIconView:
+            #ID[    ]
             id:filechooser
+
+            #DESIGN
             size_hint:1,.7
+
+            #EVENTS
             on_submit:root.chooseFileFileChosserPopup(filechooser,img) 
+
+            #Path and File Filter
             filters:["*.png", "*.png"]
             path:"D:\\PycharmProjects\\Password_Manager\\UI\\Img"
 
@@ -56,35 +74,49 @@
     #Labels
     lb_generatedPW:lb_generatedPW
     
+    #Main Popup Settings
     title:'Generate new Password, !!Warning!! old password will be lost!'
     title_size:25
     separator_color:(86 / 255, 197 / 255, 150 / 255, 1)
     size_hint:(None, None)
     size:(600, 600)
+
+    #Main GeneratePasswordPopup_Pop Container
     BoxLayout:
         orientation:"vertical"
         padding:(0, 100, 0, 0)
         spacing:10
+
         #Settings box
         BoxLayout:
             orientation:"vertical"
             spacing:10
+
             #Option 1: Slider Character Count
             BoxLayout:
+
+                #Option Text
                 Label:
                     #Text[   ]
                     text:"Characters"  
-                    #Design  
+
+                    #DESIGN  
                     size_hint:.2,1
+                
+                # Current Characters from Slider
                 Label:
                     #Param[   ]
                     text:str(slide_chars.value)
-                    #Design
+
+                    #DESIGN
                     size_hint:.1,1
+                
+                # Character Slider
                 MDSlider:
                     #ID[   ]
                     id:slide_chars
-                    #Design
+
+                    #DESIGN
                     size_hint:.7,1
                     color:(86/255, 197/255, 150/255, 1)
                     hint: True
@@ -98,17 +130,24 @@
             
             #Option 2: Checkbox Capsletters
             BoxLayout:
+                
+                #Option Text
                 Label:
                     #Text[   ]
                     text:"Mix Upper/Lower?"
                     size_hint:.2,1
+                
+                #Option CHeckbox
                 CheckBox:   
                     #ID[   ]
                     id:cb_upperlower
-                    #Design
+
+                    #DESIGN
                     active:True
                     size_hint:.1,1
                     color:(86/255, 197/255, 150/255, 1)
+                
+                #Option Explanation Text
                 Label:
                     #Text[   ]
                     text:"( a - z / A - Z)"
@@ -116,17 +155,24 @@
             
             #Option 3: Checkbox Numbers
             BoxLayout:
+                
+                #Option Text
                 Label:
                     #Text[   ]
                     text:"Numbers?"
                     size_hint:.2,1
+                
+                #Option Checkbox
                 CheckBox:
                     #ID[   ]
                     id:cb_numbers
-                    #Design
+
+                    #DESIGN
                     active:True
                     size_hint:.1,1
                     color:(86/255, 197/255, 150/255, 1)
+                
+                #Option Explanation Text
                 Label:
                     #Text[   ]
                     text:"( 0 - 9 )"
@@ -134,27 +180,42 @@
 
             #Option 4: Checkbox Symbols
             BoxLayout:
+
+                #Option Text
                 Label:
                     #Text[   ]
                     text:"Symbols?"
+                    
+                    #DESIGN
                     size_hint:.2,1
+
+                #Option Checkbox    
                 CheckBox:
                     #ID[   ]
                     id:cb_symbols
-                    #Design
+
+                    #DESIGN
                     active:True
                     size_hint:.1,1
                     color:(86/255, 197/255, 150/255, 1)
+
+                #option Explanation Text
                 Label:
                     #Text[   ]  
                     text:"( ! # $ % ( ) * + , - . / : ; = ? @ [ ] ^ _ { | } ~ )"
-                    #Design
+
+                    #DESIGN
                     size_hint:.7,1
             
             #Generated Password
-            MDTextField:    
+            MDTextField:
+                #ID [   ]  
                 id:lb_generatedPW
+                
+                #EVENTS
                 on_text:root.savePassword(lb_generatedPW)
+
+                #DESIGN
                 text:""
                 hint_text: "Edit Password here:"
                 hint_text_color_focus:(86/255, 197/255, 150/255, 1)
@@ -163,70 +224,95 @@
                 text_color_normal:(86/255, 197/255, 150/255, 1)
                 text_color_focus: (207/255, 244/255, 210/255, 1)
                 line_color_focus: (86/255, 197/255, 150/255, 1)   
-        #Button Box
         
+        #Button Box
         BoxLayout:
             spacing:140
+
+            #Confirm Generated Password Button
             MDRaisedButton:
+                #DESIGN
                 md_bg_color:(123 / 255, 228 / 255, 149 / 255, 1)
                 pos_hint:{'center_x': .4, 'center_y': .6}
                 text:"OK"
                 text_color:(0, 0, 0, 1)
+
+                #EVENTS
                 on_press:root.returnpassword()
 
+            #Generate new Password Button
             MDRaisedButton:
+                #DESIGN
                 md_bg_color:(123 / 255, 228 / 255, 149 / 255, 1)
                 pos_hint:{'center_x': .4, 'center_y': .6}
                 text:"        Generate          "
                 text_color:(0, 0, 0, 1)
+
+                #EVENTS
                 on_press:root.generatePW(lb_generatedPW,slide_chars,cb_upperlower,cb_numbers,cb_symbols)
-           
+
+            #Cancle Password Generator Popup
             MDRaisedButton:
+                #DESIGN
                 md_bg_color:(123 / 255, 228 / 255, 149 / 255, 1)
                 pos_hint:{'center_x': .4, 'center_y': .6}
                 text:"Cancel"
                 text_color:(0, 0, 0, 1)
+
+                #EVENTS
                 on_press:root.dismiss()
         
 <ListItem@ThreeLineRightIconListItem>
+    #List item Variables
     text:text
     secondary_text: secondary_text
     tertiary_text: tertiary_text
     listitemimg:listitemimg
 
+    #Default Text
     text: "Single-line item with avatar"
     secondary_text: "Username: "
     tertiary_text: "Email: "
 
+    #Events
     on_release: root.sayHello()
+
+    #Rightsided IMG
     ImageRightWidget:
+        #ID[   ]
         id:listitemimg
+        
+        #PATH
         source:"Img\\sicher.png"
 
 
 <Login>:
-
+    #Variables
     user:user
     password:password
     bt_forgotpassword:bt_forgotpassword
     cb_rememberme:cb_rememberme
 
-
+    #Login Screen Background
     MDCard:
         size_hint: None, None
-        size: 300, 450
+        size: 300, 470
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
         elevation: 10
-        #padding: 25
-        #spacing: 25
         orientation: 'vertical'
+
+        #Main Container Login Screen
         BoxLayout:
             pos_hint: {"center_x": 0.5, "center_y": 0.5}
             orientation: 'vertical'
-            #padding: 25
             spacing: 25
+            
+            #Header
             MDLabel:
+                #ID[   ]
                 id: welcome_label
+                
+                #DESIGN
                 text: "Login"
                 font_size: 40
                 halign: 'center'
@@ -234,16 +320,20 @@
                 height: self.texture_size[1]
                 padding_y: 15
 
+            # Username
             MDTextField:
+                #ID[   ]
                 id: user
-                
+                #Hint text Username
                 hint_text: "Username"
                 hint_text_color_normal: (86/255, 197/255, 150/255, 1)
                 hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+                #Error Text Username
                 helper_text: "This field is Required"
                 helper_text_mode: "on_error"
 
+                #DESIGN
                 text_color_focus: (207/255, 244/255, 210/255, 1)
                 line_color_focus: (86/255, 197/255, 150/255, 1)
                 
@@ -254,22 +344,25 @@
                 pos_hint: {"center_x": 0.5}
                 halign: 'center'
 
-
+                #EVENTS
                 on_text: root.validateText()
                 on_text_validate:root.login()
-                #icon_right: "account"
                 
-            # TextField Password   
+            # Password   
             MDTextField:
+                #ID[   ]
                 id: password
-                
+
+                #Hint text Password
                 hint_text: "Password"
                 hint_text_color_normal: (86/255, 197/255, 150/255, 1)
                 hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+                #Error Text Password
                 helper_text: "This field is Required"
                 helper_text_mode: "on_error"
                 
+                #DESIGN
                 text_color_focus: (207/255, 244/255, 210/255, 1)
                 line_color_focus: (86/255, 197/255, 150/255, 1)
                 
@@ -281,35 +374,48 @@
                 password: True
                 halign: 'center'
                 
+                #EVENTS
                 on_text: root.validateText()
                 on_text_validate:root.login()
                 
-               
-            BoxLayout:                
-                spacing:10
+            #Forgot Password / Remember Me
+            BoxLayout:               
+                spacing:15
                 padding:50,0,50,10
-                #pos_hint: {"center_x": 0.5}
+                size_hint_y: None
+                height: 25
+                #Forgot Password Anchor
                 AnchorLayout:
                     size_hint:2,1
+                    #ForgotPassword Button
                     MDTextButton:
+                        #ID[   ]
                         id: bt_forgotpassword
+                        
+                        #DESIGN
                         text: "Password?"
                         font_size: 10
-                        #text_color:(86/255, 197/255, 150/255, 1)
+                        
+                        #EVENTS
                         on_press: root.forgotPassword()
                         color: (86/255, 197/255, 150/255, 1)
+                
+                #Remember Me Text
                 Label:
+                #Design
                     text:"      Remember Me"
                     font_size: 10
+                #Remember Me Checkbox
                 CheckBox:
                     #ID[   ]
                     id:cb_rememberme
+
                     #Design
-                    #size_hint:2,2
                     color:(86/255, 197/255, 150/255, 1)
 
-
+            # Login Button
             MDRaisedButton:
+                #DESIGN
                 text: "LOG IN"
                 font_size: 12
                 pos_hint: {"center_x": 0.5}
@@ -317,19 +423,25 @@
                 text_color:(0,0,0,1)
                 line_color: (86/255, 197/255, 150/255, 1)
                 
+                #EVENTS
                 on_press:
                     root.login()
-
+            
+            #Register Button
             MDRaisedButton:
+                #Design
                 text: "SIGN UP"
                 font_size: 12
                 pos_hint: {"center_x": 0.5}
                 md_bg_color:(86/255, 197/255, 150/255, 1)
                 text_color:(0,0,0,1)
                 line_color: (86/255, 197/255, 150/255, 1)
+
+                #EVENTS
                 on_press:
                     root.register()
-
+            
+            #Bottom Spacer
             Widget:
                 size_hint_y: None
                 height: 10
@@ -962,23 +1074,29 @@
 
 
 <Register>
-
+    #Variables
     user: user
     email:email
     password:password
     valpassword:valpassword
 
+    #Register Background
     MDCard:
+        #DESIGN
         size_hint: None, None
-        size: 300,550
+        size: 300,650
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
         elevation: 10
         padding: 25
         spacing: 25
         orientation: 'vertical'
 
+        #Header Text Register
         MDLabel:
+            #ID[    ]
             id: welcome_label
+
+            #DESIGN
             text: "Register"
             font_size: 40
             halign: 'center'
@@ -988,15 +1106,19 @@
 
         #TF Username
         MDTextField:
+            #ID[    ]
             id: user
             
+            #Hint Text Username
             hint_text: "Username"
             hint_text_color_normal: (86/255, 197/255, 150/255, 1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text Username
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
@@ -1007,21 +1129,26 @@
             pos_hint: {"center_x": 0.5}
             halign: 'center'
 
+            #EVENTS
             on_text: root.validateText()
             
             
 
         #TF Email
         MDTextField:
+            #ID[    ]
             id: email
             
+            #Hint Text E-Mail
             hint_text: "E-Mail"
             hint_text_color_normal: (86/255, 197/255, 150/255, 1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text E-Mail
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
@@ -1032,19 +1159,24 @@
             pos_hint: {"center_x": 0.5}
             halign: 'center'
 
+            #EVENTS
             on_text: root.validateText()
 
         #TF Password
         MDTextField:
+            #ID[    ]
             id: password
 
+            #Hint Text Password
             hint_text: "Password"
             hint_text_color_normal: (86/255, 197/255, 150/255, 1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text Password
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
@@ -1056,19 +1188,24 @@
             password: True
             halign: 'center'
 
+            #EVENTS
             on_text: root.validateText()         
 
         #TF Validate Password
         MDTextField:
+            #ID[    ]
             id: valpassword
 
+            #Hint Text ValPassword
             hint_text: "Confirm Password"
             hint_text_color_normal: (86/255, 197/255, 150/255, 1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text ValPassword
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
@@ -1080,10 +1217,12 @@
             password: True
             halign: 'center'
 
+            #EVENTS
             on_text: root.validateText()
             
-
+        #Register Button
         MDRaisedButton:
+            #DESIGN
             text: "REGISTER"
             font_size: 12
             md_bg_color:(86/255, 197/255, 150/255, 1)
@@ -1091,10 +1230,14 @@
             text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
+
+            #EVENTS
             on_press:
                 root.register()
 
+        #Back to Login Button
         MDRaisedButton:
+            #DESIGN
             text: "BACK"
             font_size: 12
             md_bg_color:(86/255, 197/255, 150/255, 1)
@@ -1102,18 +1245,24 @@
             text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
+
+            #EVENTS
             on_press:
                 root.back()
-
+        
+        #Bottom Spacer
         Widget:
             size_hint_y: None
-            height: 10
+            height: 5
 
 #Start Forgot Password
 <Tfa>
+    #Variables
     username:username
 
+    #Tfa Background
     MDCard:
+        #DESIGN
         size_hint: None, None
         size: 300,375
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
@@ -1122,8 +1271,12 @@
         spacing: 20
         orientation: 'vertical'
 
+        #Tfa Header
         MDLabel:
+            #ID[   ]
             id: welcome_label
+
+            #DESIGN
             text: "Forgot Password"
             font_size: 40
             halign: 'center'
@@ -1131,22 +1284,24 @@
             height: self.texture_size[1]
             padding_y: 15
 
+        #TF Username
         MDTextField:
+            #ID[   ]
             id: username
+
+            #Hint Text Username
             hint_text: "Enter Username"
             hint_text_color_normal: (86/255, 197/255, 150/255, 1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text Username
             helper_text: "Enter Username"
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
-
-            on_text: root.validateText()
-            on_text_validate:root.sendMail()
-            
             write_tab:False
             size_hint_x: None
             width: 200
@@ -1156,30 +1311,42 @@
             disabled: False
             halign: "center"
 
+            #EVENTS
+            on_text: root.validateText()
+            on_text_validate:root.sendMail()
+            
 
+        #Send Mail Button
         MDRaisedButton:
+            #DESIGN
             text: "Send Mail To User"
             font_size: 12
             md_bg_color:(86/255, 197/255, 150/255, 1)
             text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
+
+            #EVENTS
             on_press:
                 root.sendMail()
 
+        #Back Button
         MDRaisedButton:
+            #EVENTS
             text: "BACK"
             font_size: 12
             md_bg_color:(86/255, 197/255, 150/255, 1)
             text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
+
+            #EVENTS
             on_press:
                 root.back()
 
 #Forgot Password New Password
 <ForgotPassword>
-
+    #Variables
     text_label:text_label
     tfacode:tfacode
     newPassword:newPassword
@@ -1187,7 +1354,9 @@
     setpw:setpw
     validation_label:validation_label
 
+    #ForgotPassword Background
     MDCard:
+        #DESIGN
         size_hint: None, None
         size: 300,600
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
@@ -1196,8 +1365,12 @@
         spacing: 15
         orientation: 'vertical'
 
+        #Forgot Password Header
         MDLabel:
+            #ID[    ]
             id: welcome_label
+
+            #DESIGN
             text: "Reset Password"
             font_size: 40
             halign: 'center'
@@ -1205,31 +1378,37 @@
             height: self.texture_size[1]
             padding_y: 15
 
+        #Send Mail to... Text
         MDLabel:
+            #ID[   ]
             id: text_label
+
+            #DESIGN
             text: "Sent E-mail to...."
             font_size: 12
             halign: 'center'
             size_hint_y: None
             height: self.texture_size[1]
         
-        #Email Code
+        #TF Email Code
         MDTextField:
+            #ID[    ]
             id: tfacode
 
-            halign: 'center'
+            #Hint Text Email Code
             hint_text: "Enter Email Code"
             hint_text_color_normal: (86/255, 197/255, 150/255, 1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
             
+            #Error Text Email Code
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
-            on_text: root.validatetfa()
-            
-            #icon_right: "eye-off"
+            halign: 'center'
+
             write_tab:False
             size_hint_x: None
             width: 200
@@ -1237,14 +1416,21 @@
             pos_hint: {"center_x": 0.5}
             password: False
             max_text_length: 8
+            
+            #EVENTS
+            on_text: root.validatetfa()
 
-
+        #Spacer Widget
         Widget:
             size_hint_y: None
             height: 10
 
+        #Info Text
         MDLabel:
+            #ID[   ]
             id: validation_label
+
+            #DESIGN
             #text: "Code is correct Enter new Password:"
             text: "First enter the Code"
             font_size: 20
@@ -1252,19 +1438,21 @@
             size_hint_y: None
             height: self.texture_size[1]
         
-
-
-        #Password
+        #TF Password
         MDTextField:
+            #ID[    ]
             id: newPassword
 
+            #Hint Text Password
             hint_text: "New Password"
             hint_text_color_normal: (1, 99/255, 99/255,1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text Password
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
@@ -1276,20 +1464,25 @@
             password: True
             disabled:True
 
+            #EVENTS
             on_text: root.validateText(self)
             
             
-        #Confirm Password
+        #TF Confirm Password
         MDTextField:
+            #ID[    ]
             id: valNewPassword
             
+            #Hint Text Confirm Password
             hint_text: " Repeat Password"
             hint_text_color_normal: (1, 99/255, 99/255,1)
             hint_text_color_focus: (86/255, 197/255, 150/255, 1)
 
+            #Error Text Confirm Password
             helper_text: ""
             helper_text_mode: "on_error"
 
+            #DESIGN
             text_color_focus: (207/255, 244/255, 210/255, 1)
             line_color_focus: (86/255, 197/255, 150/255, 1)
 
@@ -1301,10 +1494,15 @@
             password: True
             disabled: True
 
+            #EVENTS
             on_text: root.validateText(self)
             
+        #SetPassword Button
         MDRaisedButton:
+            #ID[    ]
             id:setpw
+
+            #DESIGN
             text: "Set new Password"
             font_size: 12
             md_bg_color:(86/255, 197/255, 150/255, 1)
@@ -1312,28 +1510,37 @@
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
             disabled:True
+
+            #EVENTS
             on_press:
                 root.setNewPassword()
 
+        #Back to Login Button
         MDRaisedButton:
+            #DESIGN
             text: "BACK"
             font_size: 12
             md_bg_color:(86/255, 197/255, 150/255, 1)
             text_color:(0,0,0,1)
             line_color: (86/255, 197/255, 150/255, 1)
             pos_hint: {"center_x": 0.5}
+
+            #EVENTS
             on_press:
                 root.back()
 
 
 <Manager>:
+    #ID[    ]
     id: screen_manager
 
+    #Screens
     login: login
     mainscreen: mainscreen
     register:register
     forgotpassword:forgotpassword
     tfa:tfa
+
 
     Login:
         id: login
