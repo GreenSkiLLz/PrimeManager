@@ -9,6 +9,7 @@ Config.set('kivy', 'keyboard_mode', 'system')
 
 #Comps needet for Building Exe
 from kivy.uix.filechooser import FileChooserIconView
+from kivy.clock import Clock
 from kivymd.icon_definitions import md_icons
 from kivymd.uix.card import MDCard
 from kivymd.uix.slider import MDSlider
@@ -24,7 +25,9 @@ from kivymd.app import MDApp
 from kivymd.uix.list import OneLineListItem, ImageRightWidget, ThreeLineRightIconListItem
 import win32timezone
 #### 
-
+import threading
+import time
+import re
 import os
 from Backend.CopyToClipBoard import CopyToClipBoard
 from Backend.Password_Generator import Password_Generator
@@ -204,7 +207,7 @@ class Login(Screen):
         else:
             self.password.error = True
             self.password.helper_text = ("Wrong Username or Password")
-            self.clearbeforeleave()
+            self.password.text = ""
             return
         #Error
         return
@@ -428,7 +431,119 @@ class Tfa(Screen):
         self.username.text=""
         self.manager.current = 'login'
 
+class AccSettings(Screen):
+    def __init__(self, **kwargs):
+        super(AccSettings, self).__init__(**kwargs)
+        self.app = MDApp.get_running_app()
 
+        self.avatar=ObjectProperty(None)
+        self.lbUsername=ObjectProperty(None)
+        self.lbEmail=ObjectProperty(None)
+        self.btChangeAvatar=ObjectProperty(None)
+        self.tfuser=ObjectProperty(None)
+        self.tfoldPW=ObjectProperty(None)
+        self.tfsetnewPassword=ObjectProperty(None)
+        self.lbCurrentEMail=ObjectProperty(None)
+        self.validationstatus=ObjectProperty(None)
+        self.tfsetnewEmail=ObjectProperty(None)
+        self.btupdateEmail=ObjectProperty(None)
+        self.btSendValidation=ObjectProperty(None)
+        self.tfvalidateEmail=ObjectProperty(None)
+        self.btValidateEmail=ObjectProperty(None)
+
+    def on_enter(self):
+        print('UI: Enter Profile Settings')
+        self.getCurrentAvatar()
+        self.getCurrentEmail()
+        self.getEmailValidationStatus()
+
+    
+    def getCurrentAvatar(self):
+        self.avatar.source = self.app.pm.getAvatarPath()
+
+
+    def getCurrentEmail(self):
+        self.lbEmail.text = self.app.pm.getCurrentEmail()
+        self.lbCurrentEMail.text = self.app.pm.getCurrentEmail()
+
+    def getEmailValidationStatus(self):
+        # True:  md_bg_color:(86/255, 197/255, 150/255, .15)
+        # False: md_bg_color:(1, 99/255, 99/255,.15)
+        if self.app.pm.getEmailValidation():
+            self.validationstatus.md_bg_color = (86/255, 197/255, 150/255, .15)
+        else:
+            self.validationstatus.md_bg_color = (1, 99/255, 99/255,.15)
+
+    def changeEmail(self):
+        print("change Email")
+    
+    #Can be used for all Textfields to remove spacebar
+    def removeSpaces(self,obj):
+        obj.text = str(obj.text).replace(" ","")
+
+    #Validates new Emial is an actual Email, also sets the New Email in Profile File
+    def validateNewEmail(self):
+        emailRx = "([a-z0-9!#$%&'*+\/=?^_`{|}~\-\.]+)(@)([a-z0-9!#$%&'*+\/=?^_`{|}~-]+)(\.)([a-z0-9!#$%&'*+\/=?^_`{|}~-]+)"
+
+        if re.match(emailRx,self.tfsetnewEmail.text):
+            if not self.app.pm.getCurrentEmail() == self.tfsetnewEmail.text:
+                self.app.pm.editProfile(col = "Email",value = self.tfsetnewEmail.text)
+                self.app.pm.editProfile(col = "SecurityKey",value = "")
+                self.getEmailValidationStatus() 
+                self.getCurrentEmail()   
+            else: 
+                 self.tfsetnewEmail.text=""  
+        else:
+            self.tfsetnewEmail.error = True
+        
+    # Sends mail to Current Email after pressing btSendValidation
+    def validateCurrentEmail(self):
+        self.app.pm.validateEmail_step1()
+        t = threading.Thread(target=self.disableSendVailidationCodeButton)
+       
+   
+        t.start()
+
+
+    def disableSendVailidationCodeButton(self):
+        self.btSendValidation.disabled =True
+        time.sleep(30)
+        self.btSendValidation.disabled = False
+
+
+        
+
+    #Validates tfvalidateEmail to correct format
+    def checkValidationCodeTextflied(self):
+        self.tfvalidateEmail.text = str(self.tfvalidateEmail.text).replace(" ","")
+        if len(self.tfvalidateEmail.text)>8:
+            self.tfvalidateEmail.text = self.tfvalidateEmail.text[:8]
+        if len(self.tfvalidateEmail.text)==8:
+            self.btValidateEmail.disabled=False
+        else:
+            self.btValidateEmail.disabled=True
+    
+    
+    #checks if Code is identical with the one send to current Email, also sets Validation status
+    def checkValidationCode(self):
+        if len(self.tfvalidateEmail.text)< 8:
+            self.tfvalidateEmail.error =True
+            return
+        if self.app.pm.validateEmail_step2(self.tfvalidateEmail.text):
+            self.getEmailValidationStatus()
+            self.getCurrentEmail()
+        else:
+            self.tfvalidateEmail.error =True
+
+
+    def clearbeforeleave(self):
+        print("todo clearbeforeleave")
+
+
+
+    def back(self):
+        self.clearbeforeleave()
+        self.manager.current = 'mainscreen'
 
 class MainScreen(Screen):
 
@@ -452,6 +567,7 @@ class MainScreen(Screen):
         # MainPanel
         self.btchangePlatformName = ObjectProperty(None)
         self.btchangeimg = ObjectProperty(None)
+        self.btgeneratePW = ObjectProperty(None)
         self.tf_username = ObjectProperty(None)
         self.tf_password = ObjectProperty(None)
         self.tf_email = ObjectProperty(None)
@@ -464,15 +580,20 @@ class MainScreen(Screen):
         self.app = MDApp.get_running_app()
         self.enterInit()
 
+        self.listItems = []
+        self.itemsofUserfile=[]
+        self.listItemsSortName = []
+        self.listItemsSortPlatform = []
+        self.listItemsDefault = []
+
     # InternStuff
     def enterInit(self):
         self.generatePasswordPopup = GeneratePasswordPopup_Pop(self.setgeneratedpassword)
         self.fileChooserPopup = FilechooserPopup(self.chooseFileFileChosserPopup, os.path.abspath(os.getcwd()))
 
-        self.listItems = []
-        self.listItemsSortName = []
-        self.listItemsSortPlatform = []
-        self.listItemsDefault = []
+        
+        
+
         self.sortingtype = ""
         self.currentItem = ListItem
         self.copyToClipBoard= CopyToClipBoard()
@@ -654,18 +775,28 @@ class MainScreen(Screen):
     def on_enter(self):
         print('UI: Creating main Page from Profile')
         self.enterInit()
-        self.ids.container.data = []
-        self.loadListOfItems()
 
+        Clock.schedule_once(self.loadListOfItems, 1)
+
+    
 
     #ButtonEvent When pressing logount
     def logout(self):
         self.logoutPopup()
+
+    
  
     # After Lopgout Popup This will Called when Pressing on Logout in the Popup
     def continueLogout(self,obj=None):
         print("UI: Logout User")
         self.LogoutPopup.dismiss()
+        
+        self.listItems = []
+        self.itemsofUserfile=[]
+        self.listItemsSortName = []
+        self.listItemsSortPlatform = []
+        self.listItemsDefault = []
+
         self.app.pm.logout()
         self.ids.container.clear_widgets()
         self.hasItemSelectet = False
@@ -673,15 +804,34 @@ class MainScreen(Screen):
         self.setButtonStates()
         self.manager.current = 'login'
 
+    def openaccsettings(self):
+        self.hasItemSelectet = False
+        self.inEditMode = False
+        self.setButtonStates()
+        self.manager.current = 'accsettings'
 
+    
     # CSV:  ID;PlatformName;Username;Password;Email;SecurityKey;Telephon;Link;ImgPath
     #This Function loads all Entries in CSV to the list on the left
     #Calls addToListInUi()
-    def loadListOfItems(self):
+    def loadListOfItems(self,dt):
+        
+        print("Load list of items ", dt)
+    
         loadlist = self.app.pm.getAllPasswords()
+        
+        if  len(self.itemsofUserfile) == len(loadlist):
+            return
+            
+        self.itemsofUserfile = loadlist
+
+        Window.set_system_cursor("wait")
         self.maxID = len(loadlist.index)
         self.ids.container.clear_widgets()
         counter = 1
+        
+        
+        #self.listofnewloadeditems = []
 
         for index, row in loadlist[1:].iterrows():
             newlistItem = ListItem()
@@ -698,6 +848,7 @@ class MainScreen(Screen):
 
             newlistItem.listref = self
 
+            #self.listofnewloadeditems.append(newlistItem)
             counter = counter+1
 
             self.addToListInUi(newlistItem)
@@ -706,6 +857,9 @@ class MainScreen(Screen):
             self.sortingNames()
         if self.sortingtype == "PLATFORM":
             self.sortingPlatform()
+
+
+        Window.set_system_cursor("arrow")
 
     #Adds Item to list to the left
     def addToListInUi(self, widget):
@@ -892,8 +1046,6 @@ class MainScreen(Screen):
                 if(item == self.currentItem):
                     self.listItems.remove(item)
             self.maxID = self.maxID-1
-            #self.listItems = []
-            #self.loadListOfItems()
 
             if self.sortingtype == "NAME":
                 self.sortingNames()
@@ -955,6 +1107,7 @@ class MainScreen(Screen):
                 # MainPanel
                 self.btchangePlatformName.disabled = False
                 self.btchangeimg.disabled = False
+                self.btgeneratePW.disabled=False
                 self.tf_username.disabled = False
                 self.tf_password.disabled = False
                 self.tf_email.disabled = False
@@ -975,6 +1128,7 @@ class MainScreen(Screen):
                 # MainPanel
                 self.btchangePlatformName.disabled = True
                 self.btchangeimg.disabled = True
+                self.btgeneratePW.disabled = True
                 self.tf_username.disabled = True
                 self.tf_password.disabled = True
                 self.tf_email.disabled = True
@@ -1003,6 +1157,7 @@ class MainScreen(Screen):
             self.lbPlatformName.text = ""
             self.btchangePlatformName.disabled = False
             self.btchangeimg.disabled = True
+            self.btgeneratePW.disabled = False
             self.tf_username.disabled = False
             self.tf_password.disabled = False
             self.tf_email.disabled = False
@@ -1066,6 +1221,7 @@ class Manager(ScreenManager):
     register = ObjectProperty(None)
     forgotpassword = ObjectProperty(None)
     tfa = ObjectProperty(None)
+    accsettings = ObjectProperty(None)
 
 
 class ScreensApp(MDApp):

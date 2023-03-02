@@ -24,6 +24,8 @@ class Passwort_Manager:
 
         self.tfaUser=""
         self.currenttfaCode=""
+        self.currentEmailCode=""
+        self.verifyEmailSendingStatus=""
 
     def __loadKey(self):
         self.key=""
@@ -123,6 +125,64 @@ class Passwort_Manager:
             print ("failed to send mail")
 
 
+    def validateEmail_step1(self):
+        if not self.loggedin:
+            return
+        
+        random.seed(time.process_time())
+        validationCode=[random.randrange(10) for i in range(8)]
+        self.currentEmailCode = "".join(str(e) for e in validationCode)
+        print("PMG: ",self.currentEmailCode)
+        
+        t1 =threading.Thread(target= self.send_Email_TFA, args=["zvwfcfudbjqqouam",self.getCurrentEmail(),self.currentEmailCode])
+        t1.start()
+
+    
+    def vlaidateEmail_finish(self):
+        self.currentEmailCode=""
+        self.verifyEmailSendingStatus=""
+
+    def validateEmail_step2(self,code):
+        if not self.loggedin:
+            return False
+        
+        if code == self.currentEmailCode:
+            print("PMG: Correct Validation Code: ",code)
+            self.editProfile(col="SecurityKey",value=str(code))
+            self.vlaidateEmail_finish()
+            return True
+        
+        return False
+
+
+    def send_Email_TFA(self, pwd, recipient, code):
+        import smtplib
+        user = "infoprimemanager@gmail.com"
+        text = str("To validate your E-Mail enter the following Code into the validation textfield:\n\n\t"+code+
+                "\n\nIf you did not requiest this code, you can safely ignore this E-Mail.\n"+
+                "Your Email can't get validated without this code!\n\n"+
+                "Kind regards,\nYour Prime Manager\n\n\n-This E-Mail was generated automatically, please do NOT Reply."
+                )
+        
+        FROM = user
+        TO = recipient if isinstance(recipient, list) else [recipient]
+        SUBJECT = "Prime Manager, validate your Email"
+        TEXT = text
+        # Prepare actual message
+        message = """From: %s\nTo: %s\nSubject: %s\n\n%s
+        """ % (FROM, ", ".join(TO), SUBJECT, TEXT)
+        try:
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.ehlo()
+            server.starttls()
+            server.login(user, pwd)
+            server.sendmail(FROM, TO, message)
+            server.close()
+            self.verifyEmailSendingStatus=True
+            print ('successfully sent the mail')
+        except:
+            self.verifyEmailSendingStatus=False
+            print ("failed to send mail")
 
 
     #Call to Login
@@ -164,6 +224,8 @@ class Passwort_Manager:
         self.CSVasList=""
         
         self.tfaUser =""
+        self.currentEmailCode=""
+        self.verifyEmailSendingStatus=""
 
     #Call to Register
     def registerNewUser(self, userName, password,email):
@@ -180,10 +242,11 @@ class Passwort_Manager:
             encryptUserName=self.fernetObj.encrypt(bytes(userName,encoding="utf-8"))
             encryptPassword= self.fernetObj.encrypt(bytes(password,encoding="utf-8"))
             encryptEmail = self.fernetObj.encrypt(bytes(email, encoding="utf-8"))
+            encryptImg = self.fernetObj.encrypt(b"Img\\sicher.png")
             #User File
             with open(str(self.UserDirPath+"/"+userName+".usr"),"w") as file:
                 file.write("PlatformName:Username:Password:Email:SecurityKey:Telephon:Link:ImgPath\n"
-                           +encryptplatform.decode()+":"+encryptUserName.decode()+":"+encryptPassword.decode()+":"+encryptEmail.decode())
+                           +encryptplatform.decode()+":"+encryptUserName.decode()+":"+encryptPassword.decode()+":"+encryptEmail.decode()+"::::"+encryptImg.decode())
             return True
             #self.login(userName,password)
         else:
@@ -192,7 +255,74 @@ class Passwort_Manager:
             #self.logout()
 
 
+    #EditProfile
+    #PlatformName;Username;Password;Email;SecurityKey;Telephon;Link;ImgPath
+    def editProfile(self,col="",value=""):
+        if self.loggedin:
 
+            #platform_ = self.fernetObj.encrypt(bytes(platform, encoding="utf-8")).decode()
+            #self.CSVasList.loc[0]["Email"] = [platform_,userName_,Password_,eMail_,securityKey_,telephon_,link_,imgPath_]
+
+            if col=="":
+                return
+            
+            elif col=="Username":
+                userName_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["Username"] = userName_
+
+            elif col=="Password":
+                Password_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["Password"] = Password_
+
+            elif col=="Email":
+                eMail_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["Email"] = eMail_
+
+            elif col=="SecurityKey":
+                securityKey_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["SecurityKey"] = securityKey_
+
+            elif col=="Telephon":
+                telephon_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["Telephon"] = telephon_
+
+            elif col=="Link":
+                link_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["Link"] = link_
+
+            elif col=="ImgPath":
+                imgPath_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+                self.CSVasList.loc[0]["ImgPath"] = imgPath_
+        
+            self.__WriteCSV()
+
+    
+    def getAvatarPath(self):
+        if not self.loggedin:
+            return "Img\\sicher.png"
+         
+        if not pd.isnull(self.CSVasList.loc[0]["ImgPath"]):
+            return self.fernetObj.decrypt(self.CSVasList.loc[0]["ImgPath"]).decode()
+        
+        return "Img\\sicher.png"
+    
+
+    def getCurrentEmail(self):
+        if not self.loggedin:
+            return False
+
+        return self.fernetObj.decrypt(self.CSVasList.loc[0]["Email"]).decode()
+         
+
+    def getEmailValidation(self):
+        if not self.loggedin:
+            return False
+        
+        if pd.isnull(self.CSVasList.loc[0]["SecurityKey"]) or self.fernetObj.decrypt(self.CSVasList.loc[0]["SecurityKey"]).decode() =="":
+            return False
+        else:
+            return True
+         
     def __setFernetobj(self):
         self.__loadKey()
         self.fernetObj=Fernet(self.key)
@@ -211,7 +341,10 @@ class Passwort_Manager:
     def translate(self,item):
         self.__setFernetobj()
         return self.fernetObj.decrypt(item).decode()
+    
     def getAllPasswords(self):
+        if(len(self.CSVasList)>0):
+            return self.CSVasList
         self.__readCSVAndSetCSVlist()
         return self.CSVasList
 

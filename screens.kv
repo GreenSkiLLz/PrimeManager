@@ -298,7 +298,14 @@
         size_hint: None, None
         size: 300, 470
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        
+        #SHADDOW
         elevation: 10
+        shadow_radius: 30
+        shadow_softness: 56
+        shadow_softness_size: 5
+        shadow_color: (86/255, 197/255, 150/255, .4)
+
         orientation: 'vertical'
 
         #Main Container Login Screen
@@ -466,6 +473,7 @@
     #Main Panel
     btchangePlatformName:btchangePlatformName
     btchangeimg:btchangeimg
+    btgeneratePW:btgeneratePW
     tf_username:tf_username
     tf_password:tf_password
     tf_email:tf_email
@@ -493,7 +501,7 @@
 
             Label:
                 size_hint: 1 , 1
-                text:"Header"
+                #text:"Header"
                 font_size:23
 
             #Header Buttons Right
@@ -506,6 +514,7 @@
                     ripple_scale: 0
                     icon:"account-circle"
                     icon_size: "36sp"
+                    on_press:root.openaccsettings()
                     #disabled:True
                 
                 MDIconButton:
@@ -620,6 +629,7 @@
                 MDCard:
                     #Middle panel Scroll View
                     ScrollView:
+                        elevation:0
                         do_scroll_x: False
                         do_scroll_y: True
                         GridLayout:
@@ -688,6 +698,7 @@
                                                 pos_hint: {'center_x': .5, 'center_y': .5}
                                                 text_color:0,0,0,1
                                                 text:'       Copy       ' #7 Spaces
+                                                elevation:0
 
                                 #Password
                                 MDCard:
@@ -753,15 +764,19 @@
                                                     pos_hint: {'center_x': .5, 'center_y': .5}
                                                     text_color:0,0,0,1
                                                     text:'       Copy       ' #7 Spaces
+                                                    elevation:0
                                             AnchorLayout:
                                                 anchor_x:"left"
                                                     #Button Generate
                                                 MDRaisedButton:
                                                     #Design
+                                                    id:btgeneratePW
+                                                    disabled:False
                                                     md_bg_color:(123/255, 228/255, 149/255, 1)
                                                     pos_hint: {'center_x': .5, 'center_y': .5}
                                                     text_color:0,0,0,1
                                                     text:'    Generate    ' #4 Spaces
+                                                    elevation:0
                                                     #on_press:root.generatePassword()
                                                     on_press:root.openGeneratePasswordPopup()
 
@@ -820,6 +835,7 @@
                                             MDRaisedButton:
                                                 
                                                 #Design
+                                                elevation:0
                                                 on_press:root.copyTextFromFieldToClipboard(tf_email)
                                                 md_bg_color:(123/255, 228/255, 149/255, 1)
                                                 pos_hint: {'center_x': .5, 'center_y': .5}
@@ -881,6 +897,7 @@
                                             #Button
                                             MDRaisedButton:
                                                 #Design
+                                                elevation:0
                                                 on_press:root.copyTextFromFieldToClipboard(tf_securitykey)
                                                 md_bg_color:(123/255, 228/255, 149/255, 1)
                                                 pos_hint: {'center_x': .5, 'center_y': .5}
@@ -940,6 +957,7 @@
                                             MDRaisedButton:
                                                 
                                                 #Design
+                                                elevation:0
                                                 on_press:root.copyTextFromFieldToClipboard(tf_phone)
                                                 md_bg_color:(123/255, 228/255, 149/255, 1)
                                                 pos_hint: {'center_x': .5, 'center_y': .5}
@@ -991,6 +1009,7 @@
                                             #Button
                                             MDRaisedButton:
                                                 #Design
+                                                elevation:0
                                                 on_press:root.copyTextFromFieldToClipboard(tf_link)
                                                 md_bg_color:(123/255, 228/255, 149/255, 1)
                                                 pos_hint: {'center_x': .5, 'center_y': .5}
@@ -1086,7 +1105,14 @@
         size_hint: None, None
         size: 300,650
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        
+        #SHADDOW
         elevation: 10
+        shadow_radius: 30
+        shadow_softness: 56
+        shadow_softness_size: 5
+        shadow_color: (86/255, 197/255, 150/255, .4)
+
         padding: 25
         spacing: 25
         orientation: 'vertical'
@@ -1266,7 +1292,14 @@
         size_hint: None, None
         size: 300,375
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        
+        #SHADDOW
         elevation: 10
+        shadow_radius: 30
+        shadow_softness: 56
+        shadow_softness_size: 5
+        shadow_color: (86/255, 197/255, 150/255, .4)
+
         padding: 25
         spacing: 20
         orientation: 'vertical'
@@ -1360,7 +1393,14 @@
         size_hint: None, None
         size: 300,600
         pos_hint: {"center_x": 0.5, "center_y": 0.5}
+        
+        #SHADDOW
         elevation: 10
+        shadow_radius: 30
+        shadow_softness: 56
+        shadow_softness_size: 5
+        shadow_color: (86/255, 197/255, 150/255, .4)
+
         padding: 25
         spacing: 15
         orientation: 'vertical'
@@ -1415,6 +1455,7 @@
             font_size: 18
             pos_hint: {"center_x": 0.5}
             password: False
+            input_filter: 'int'
             max_text_length: 8
             
             #EVENTS
@@ -1530,6 +1571,449 @@
                 root.back()
 
 
+
+<AccSettings>
+    
+    avatar:avatar
+    lbUsername:lbUsername
+    lbEmail:lbEmail
+    btChangeAvatar:btChangeAvatar
+    tfuser:tfuser
+    tfoldPW:tfoldPW
+    tfsetnewPassword:tfsetnewPassword
+    lbCurrentEMail:lbCurrentEMail
+    validationstatus:validationstatus
+    tfsetnewEmail:tfsetnewEmail
+    btupdateEmail:btupdateEmail
+    btSendValidation:btSendValidation
+    tfvalidateEmail:tfvalidateEmail
+    btValidateEmail:btValidateEmail
+
+
+
+    BoxLayout:
+        orientation:'vertical'
+
+        #Header
+        BoxLayout:  
+            orientation:'horizontal'
+            size_hint:1,None
+            size:0,100
+            #Header Spacer
+            BoxLayout:
+                size_hint: .1 , 1
+
+                MDIconButton:
+                    size_hint:1,1
+                    ripple_scale: 0
+                    icon:"backburger"
+                    icon_size: "36sp"
+                    #EVENTS
+                    on_press:
+                        root.back()
+
+            Label:
+                size_hint: 1 , 1
+                text:"Header"
+                font_size:23
+        
+        #Main Content
+        BoxLayout:
+            orientation:"vertical"
+            MDCard:
+                
+                ScrollView:
+                    elevation:0
+                    do_scroll_x: False
+                    do_scroll_y: True
+
+                    GridLayout:
+                        cols:1
+                        size_hint_y: None
+                        size: self.minimum_size
+                        spacing:20
+                        Widget:
+                            size_hint_y:None
+                            height:50
+
+                        BoxLayout:
+                            size_hint_y:None
+                            height:300
+                            orientation:"vertical"
+                            
+                            AnchorLayout:
+                                size_hint_y:None
+                                height:200
+                                Image:
+                                    id:avatar
+                                    size_hint:None,None
+                                    width:200
+                                    height:200
+                                    source:"Img\\sicher.png"
+                            
+                            Label:
+                                id:lbUsername
+                                text:"UserName"
+                                font_size:22
+                            Label:
+                                id:lbEmail
+                                text:"Email"
+                                font_size:22
+                        
+                        #Change Avatar 
+                        BoxLayout:
+                            size_hint_y:None
+                            height:150
+                            orientation:"vertical"
+                                
+                            MDCard:
+                                size_hint_y:None
+                                height:50
+                                md_bg_color:(86/255, 197/255, 150/255, .15)
+                                Label:
+                                    font_size:22
+                                    text:"Change Avatar" 
+                            BoxLayout:
+                                BoxLayout:
+                                    orientation:"vertical"
+                                    size_hint:.5,1
+                                    
+                                    Label:
+                                        text: "Current Avatar:"
+                                    Image:
+                                        source:avatar.source
+                                    
+                                
+                                AnchorLayout:
+                                    size_hint:.5,1
+                                    MDRaisedButton:
+                                        id: btChangeAvatar
+                                        #DESIGN
+                                        text: "Select Image"
+                                        font_size: 12
+                                        #pos_hint: {"center_x": 0.5}
+                                        md_bg_color:(123/255, 228/255, 149/255, 1)
+                                        text_color:(0,0,0,1)
+                                        line_color: (123/255, 228/255, 149/255, 1)
+                                        elevation:0
+                        
+                        #Change Username/Password 
+                        BoxLayout:
+                            size_hint_y:None
+                            height:200
+                            orientation:"vertical"
+                                
+                            MDCard:
+                                size_hint_y:None
+                                height:50
+                                md_bg_color:(86/255, 197/255, 150/255, .15)
+                                Label:
+                                    font_size:22
+                                    text:"Change Username or Password" 
+                            #Change Username/Password Content
+                            BoxLayout:
+                                #Username
+                                BoxLayout:
+                                    orientation:"vertical"
+                                    size_hint:.5,1
+                                    Label:
+                                        text:"Change Username"
+                                    AnchorLayout:
+                                        MDTextField:
+                                            #ID[   ]
+                                            id: tfuser
+                                            #Hint text Username
+                                            hint_text: "Username"
+                                            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                                            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                                            #Error Text Username
+                                            helper_text: "This field is Required"
+                                            helper_text_mode: "on_error"
+
+                                            #DESIGN
+                                            text_color_focus: (207/255, 244/255, 210/255, 1)
+                                            line_color_focus: (86/255, 197/255, 150/255, 1)
+                                            
+                                            write_tab:False
+                                            size_hint_x: None
+                                            width: 300
+                                            font_size: 18
+
+
+
+                                #Password
+                                BoxLayout:
+                                    orientation:"vertical"
+                                    size_hint:.5,1
+                                    spacing:25
+
+                                    
+                                    Label:
+                                        text: "Change your Password here"
+                                    AnchorLayout:
+                                        MDTextField:
+                                            #ID[   ]
+                                            id: tfoldPW
+                                            #Hint text Old Password
+                                            hint_text: "Old Password"
+                                            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                                            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                                            #Error Text Username
+                                            helper_text: "This field is Required"
+                                            helper_text_mode: "on_error"
+
+                                            #DESIGN
+                                            text_color_focus: (207/255, 244/255, 210/255, 1)
+                                            line_color_focus: (86/255, 197/255, 150/255, 1)
+                                            
+                                            write_tab:False
+                                            size_hint_x: None
+                                            width: 300
+                                            font_size: 18
+                                            password:True
+                                            halign: 'center'
+                                        
+                                    AnchorLayout:
+                                        MDTextField:
+                                            #ID[   ]
+                                            id: tfsetnewPassword
+                                            #Hint text New Password
+                                            hint_text: "New Password"
+                                            hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                                            hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                                            #Error Text Username
+                                            helper_text: "This field is Required"
+                                            helper_text_mode: "on_error"
+
+                                            #DESIGN
+                                            text_color_focus: (207/255, 244/255, 210/255, 1)
+                                            line_color_focus: (86/255, 197/255, 150/255, 1)
+                                            
+                                            write_tab:False
+                                            size_hint_x: None
+                                            width: 300
+                                            font_size: 18
+                                            password:True
+                                            halign: 'center'
+                        
+                        #Change / Verify E-Mail
+                        BoxLayout:
+                            size_hint_y:None
+                            height:200
+                            orientation:"vertical"
+                                
+                            MDCard:
+                                size_hint_y:None
+                                height:50
+                                md_bg_color:(86/255, 197/255, 150/255, .15)
+                                Label:
+                                    font_size:22
+                                    text:"Change / Verify E-Mail"
+
+                            #Change / Verify E-Mail Content
+                            BoxLayout:
+
+                                #Current Email
+                                BoxLayout:
+                                    orientation:"vertical"
+
+                                    #Überschrift links
+                                    Label:
+                                        text:" Current Email"
+                                    
+                                    #Linker Content
+                                    BoxLayout:
+                                        
+                                        #Current Email
+                                        Label:
+                                            id:lbCurrentEMail
+                                            text:"..@....com"
+
+                                        #Validation status
+                                        AnchorLayout:
+                                            MDCard:
+                                                id:validationstatus
+                                                size_hint: None, None
+                                                size: 200, 50
+
+                                                #md_bg_color:(86/255, 197/255, 150/255, .15)
+                                                md_bg_color:(1, 99/255, 99/255,.15)
+                                                Label:
+                                                    text:"Verfikation status"
+
+                                AnchorLayout:
+                                    size_hint:None,None
+                                    width:5
+                                    height:125
+                                    MDCard:
+                                        md_bg_color:(86/255, 197/255, 150/255, .15)
+
+                                #Change E-Mail/Validate Email
+                                BoxLayout:
+                                    orientation:"vertical"
+                                    
+                                    #Change Email
+                                    BoxLayout:
+                                        AnchorLayout:
+                                            size_hint_x:.25
+                                            Label:
+                                                text:"Change your E-Mail: "
+                                        
+                                        AnchorLayout:
+                                            size_hint_x:.5
+                                            MDTextField:
+                                                #ID[   ]
+                                                id: tfsetnewEmail
+                                                #Hint text New EMail
+                                                hint_text: "New E-Mail"
+                                                hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                                                hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                                                #Error Text EMail
+                                                helper_text: "Invalide Email Format"
+                                                helper_text_mode: "on_error"
+
+                                                #DESIGN
+                                                text_color_focus: (207/255, 244/255, 210/255, 1)
+                                                line_color_focus: (86/255, 197/255, 150/255, 1)
+                                                
+                                                write_tab:False
+                                                size_hint_x: None
+                                                width: 300
+                                                font_size: 18
+                                                password:False
+                                                halign: 'center'
+
+                                                #EVENTS
+                                                on_text:root.removeSpaces(self)
+                                                on_text_validate:root.validateNewEmail()
+
+                                        AnchorLayout:  
+                                            size_hint_x:.25  
+                                            MDRaisedButton:
+                                                id:btupdateEmail
+                                                #DESIGN
+                                                text: "Update E-Mail"
+                                                font_size: 12
+                                                #pos_hint: {"center_x": 0.5}
+                                                md_bg_color:(123/255, 228/255, 149/255, 1)
+                                                text_color:(0,0,0,1)
+                                                line_color: (123/255, 228/255, 149/255, 1)
+                                                elevation:0
+
+                                                #EVENTS
+                                                on_press:root.validateNewEmail()
+                                    
+                                    #Validate Email
+                                    BoxLayout:
+                                        
+                                        AnchorLayout:  
+                                            size_hint_x:.25  
+                                            MDRaisedButton:
+                                                id:btSendValidation
+                                                #DESIGN
+                                                text: "Send Validation Code"
+                                                font_size: 12
+                                                #pos_hint: {"center_x": 0.5}
+                                                md_bg_color:(123/255, 228/255, 149/255, 1)
+                                                text_color:(0,0,0,1)
+                                                line_color: (123/255, 228/255, 149/255, 1)
+                                                elevation:0
+
+                                                #EVENTS
+                                                on_press:root.validateCurrentEmail()
+
+                                                
+                                                
+                                        #Textfield Validation Code
+                                        AnchorLayout:
+                                            size_hint_x:.5 
+                                            MDTextField:
+                                                #ID[   ]
+                                                id: tfvalidateEmail
+                                                #Hint text New Password
+                                                hint_text: "Enter Verification Code"
+                                                hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                                                hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                                                #Error Text Username
+                                                helper_text: "Invalid Code"
+                                                helper_text_mode: "on_error"
+
+                                                #DESIGN
+                                                text_color_focus: (207/255, 244/255, 210/255, 1)
+                                                line_color_focus: (86/255, 197/255, 150/255, 1)
+                                                
+                                                write_tab:False
+                                                size_hint_x: None
+                                                width: 300
+                                                font_size: 18
+                                                password:False
+                                                halign: 'center'
+                                                input_filter: 'int'
+
+                                                max_text_length: 8
+
+                                                #EVENTS
+                                                on_text:root.checkValidationCodeTextflied()
+                                                on_text_validate: root.checkValidationCode()
+
+                                        #Button Validation Code
+                                        AnchorLayout:    
+                                            size_hint_x:.25
+                                            MDRaisedButton:
+                                                id:btValidateEmail
+                                                #DESIGN
+                                                text: "Validate E-Mail"
+                                                font_size: 12
+                                                #pos_hint: {"center_x": 0.5}
+                                                    
+                                                md_bg_color:(123/255, 228/255, 149/255, 1)
+                                                text_color:(0,0,0,1)
+                                                line_color: (123/255, 228/255, 149/255, 1)
+                                                elevation:0
+                                                disabled:True
+                                                
+                                                #EVENTS
+                                                on_press: root.checkValidationCode()
+                                                
+                                        
+
+
+                        
+                        
+                        #Last Scroll view Item
+                        BoxLayout:
+                            size_hint_y:None
+                            height:250
+                            orientation:"vertical"
+                                
+                            MDCard:
+                                size:
+                                size_hint_y:None
+                                height:50
+                                md_bg_color:(86/255, 197/255, 150/255, 1)
+                                #md_bg_color:(1, 99/255, 99/255,1)
+                                Label:
+                                    font_size:22
+                                    text:""                
+        
+        
+        
+        #Floor
+        BoxLayout:
+            orientation:'horizontal'
+            size_hint:1,None
+            size:0,50
+
+
+
+
+
+
 <Manager>:
     #ID[    ]
     id: screen_manager
@@ -1540,6 +2024,7 @@
     register:register
     forgotpassword:forgotpassword
     tfa:tfa
+    accsettings:accsettings
 
 
     Login:
@@ -1564,4 +2049,8 @@
     Tfa:
         id: tfa
         name:"tfa"
+        manager:screen_manager
+    AccSettings:
+        id:accsettings
+        name:"accsettings"
         manager:screen_manager
