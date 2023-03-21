@@ -1,0 +1,24 @@
+-Add to archive
+
+-Rar4
+
+-1024kb size
+
+Archive options:
+ - Create SFX archive
+ - Create solid archive
+ - Lock Archive
+
+
+Advanced/SFX options:
+- path : C:\Program Files\PrimeManager
+	or %userprofile%\documents\PrimeManager
+- Text and Icon:
+   -Title text and Logo
+
+- Advanced/Add shortcut:
+  - Source file Name: PrimeManager.exe
+  - Destination folder: \
+  - Description: PrimeManager.exe
+  - Name: PrimeManager
+  - Icon: %ProgramFiles%\PrimeManager\Logo\Icon_64.ico

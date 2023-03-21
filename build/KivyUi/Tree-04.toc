@@ -1,0 +1,9 @@
+('C:\\Users\\Manuel '
+ 'Dovern\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\share\\glew\\bin',
+ None,
+ [],
+ 'DATA',
+ [('glew32.dll',
+   'C:\\Users\\Manuel '
+   'Dovern\\AppData\\Local\\Packages\\PythonSoftwareFoundation.Python.3.10_qbz5n2kfra8p0\\LocalCache\\local-packages\\share\\glew\\bin\\glew32.dll',
+   'DATA')])
