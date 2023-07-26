@@ -306,13 +306,19 @@ class Passwort_Manager:
         
         return "Img\\sicher.png"
     
+    def setAvatarPath(self, value):
+        if self.loggedin:
+            imgPath_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
+            self.CSVasList.loc[0]["ImgPath"] = imgPath_
+            self.__WriteCSV()
+            
 
     def getCurrentEmail(self):
         if not self.loggedin:
             return False
 
         return self.fernetObj.decrypt(self.CSVasList.loc[0]["Email"]).decode()
-         
+    
 
     def getEmailValidation(self):
         if not self.loggedin:
@@ -322,7 +328,8 @@ class Passwort_Manager:
             return False
         else:
             return True
-         
+        
+        
     def __setFernetobj(self):
         self.__loadKey()
         self.fernetObj=Fernet(self.key)

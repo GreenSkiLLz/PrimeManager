@@ -475,8 +475,10 @@ class AccSettings(Screen):
         # False: md_bg_color:(1, 99/255, 99/255,.15)
         if self.app.pm.getEmailValidation():
             self.validationstatus.md_bg_color = (86/255, 197/255, 150/255, .15)
+            self.btSendValidation.disabled = True
         else:
             self.validationstatus.md_bg_color = (1, 99/255, 99/255,.15)
+            self.btSendValidation.disabled = False
 
     def changeEmail(self):
         print("change Email")
@@ -502,11 +504,11 @@ class AccSettings(Screen):
         
     # Sends mail to Current Email after pressing btSendValidation
     def validateCurrentEmail(self):
-        self.app.pm.validateEmail_step1()
-        t = threading.Thread(target=self.disableSendVailidationCodeButton)
-       
-   
-        t.start()
+        if not self.app.pm.getEmailValidation():
+            print("Yes")
+            self.app.pm.validateEmail_step1()
+            t = threading.Thread(target=self.disableSendVailidationCodeButton)
+            t.start()
 
 
     def disableSendVailidationCodeButton(self):
@@ -1119,10 +1121,10 @@ class MainScreen(Screen):
                 self.tf_phone.disabled = False
                 self.tf_link.disabled = False
 
-                self.tf_password.password = False
-                self.tf_securitykey.password = False
-                self.show_password.disabled = True
-                self.show_secKey.disabled = True
+                #self.tf_password.password = False
+                #self.tf_securitykey.password = False
+                #self.show_password.disabled = True
+                #self.show_secKey.disabled = True
 
             # If Item is Selected but EditMode is Deactivated Disable Everything in MainPanel
             else:
@@ -1140,10 +1142,10 @@ class MainScreen(Screen):
                 self.tf_phone.disabled = True
                 self.tf_link.disabled = True
 
-                self.tf_password.password = True
-                self.tf_securitykey.password = True
-                self.show_password.disabled = False
-                self.show_secKey.disabled = False
+                #self.tf_password.password = True
+                #self.tf_securitykey.password = True
+                #self.show_password.disabled = False
+                #self.show_secKey.disabled = False
 
         # If Nothing is Selected Reset Everything
         else:

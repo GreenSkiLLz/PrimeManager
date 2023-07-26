@@ -1625,7 +1625,7 @@
                 ScrollView:
                     elevation:0
                     do_scroll_x: False
-                    do_scroll_y: False
+                    do_scroll_y: True
 
 
                     GridLayout:
@@ -1633,6 +1633,7 @@
                         size_hint_y: None
                         size: self.minimum_size
                         spacing:20
+
                         Widget:
                             size_hint_y:None
                             height:50
@@ -1692,11 +1693,12 @@
                                         #DESIGN
                                         text: "Select Image"
                                         font_size: 12
-                                        #pos_hint: {"center_x": 0.5}
+                                        #pos_hint: {"center_x": 0.5}                                        
                                         md_bg_color:(123/255, 228/255, 149/255, 1)
                                         text_color:(0,0,0,1)
                                         line_color: (123/255, 228/255, 149/255, 1)
                                         elevation:0
+                                        shadow_color: (33/255, 33/255, 33/255, 0)
                         
                         #Change Username/Password 
                         BoxLayout:
@@ -1890,7 +1892,7 @@
 
                                                 #EVENTS
                                                 on_text:root.removeSpaces(self)
-                                                on_text_validate:root.validateNewEmail()
+                                                
 
                                         AnchorLayout:  
                                             size_hint_x:.25  
@@ -1904,6 +1906,7 @@
                                                 text_color:(0,0,0,1)
                                                 line_color: (123/255, 228/255, 149/255, 1)
                                                 elevation:0
+                                                shadow_color: (33/255, 33/255, 33/255, 0)
 
                                                 #EVENTS
                                                 on_press:root.validateNewEmail()
@@ -1923,6 +1926,7 @@
                                                 text_color:(0,0,0,1)
                                                 line_color: (123/255, 228/255, 149/255, 1)
                                                 elevation:0
+                                                shadow_color: (33/255, 33/255, 33/255, 0)
 
                                                 #EVENTS
                                                 on_press:root.validateCurrentEmail()

@@ -12,7 +12,11 @@ class CopyToClipBoard:
         print("Copy: ",text)
         with open(self.pathTempFile+"\\temp.bat", "w") as f:
             f.write(str(self.Command1+text+self.Command2))
-        subprocess.run(str(self.pathTempFile+"\\temp.bat"))
+        try:
+            subprocess.call(str("ECHO | SET /P="+text+"| CLIP"),shell=True)
+            #subprocess.run(str(self.pathTempFile+"\\temp.bat"))
+        except:
+            print("Error while Copying")
 
         with open(self.pathTempFile+"\\temp.bat", "w") as f:
             f.write(str(self.Command1+""+self.Command2))
