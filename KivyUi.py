@@ -451,6 +451,7 @@ class AccSettings(Screen):
         self.validationstatus=ObjectProperty(None)
         self.tfsetnewEmail=ObjectProperty(None)
         self.btupdateEmail=ObjectProperty(None)
+        self.tfValidatenewEmailEntrywithPW = ObjectProperty(None)
         self.btSendValidation=ObjectProperty(None)
         self.tfvalidateEmail=ObjectProperty(None)
         self.btValidateEmail=ObjectProperty(None)
@@ -463,7 +464,10 @@ class AccSettings(Screen):
 
     
     def getCurrentAvatar(self):
-        self.avatar.source = self.app.pm.getAvatarPath()
+        try:
+            self.avatar.source = self.app.pm.getAvatarPath()
+        except:
+            self.avatar.source = "Img\\sicher.png"
 
 
     def getCurrentEmail(self):
@@ -480,12 +484,21 @@ class AccSettings(Screen):
             self.validationstatus.md_bg_color = (1, 99/255, 99/255,.15)
             self.btSendValidation.disabled = False
 
-    def changeEmail(self):
-        print("change Email")
+   
     
     #Can be used for all Textfields to remove spacebar
     def removeSpaces(self,obj):
         obj.text = str(obj.text).replace(" ","")
+
+    #Change Email with Password
+    def changeEmail(self):
+        if self.app.pm.checkPW(self.tfValidatenewEmailEntrywithPW.text):
+            self.validateNewEmail()
+            self.tfValidatenewEmailEntrywithPW.text =""
+            self.tfsetnewEmail.text = ""
+        else:
+            self.tfValidatenewEmailEntrywithPW.text =""
+            self.tfValidatenewEmailEntrywithPW.error = True
 
     #Validates new Emial is an actual Email, also sets the New Email in Profile File
     def validateNewEmail(self):
@@ -505,16 +518,10 @@ class AccSettings(Screen):
     # Sends mail to Current Email after pressing btSendValidation
     def validateCurrentEmail(self):
         if not self.app.pm.getEmailValidation():
-            print("Yes")
+            
             self.app.pm.validateEmail_step1()
-            t = threading.Thread(target=self.disableSendVailidationCodeButton)
-            t.start()
+            self.btSendValidation.disabled =True
 
-
-    def disableSendVailidationCodeButton(self):
-        self.btSendValidation.disabled =True
-        time.sleep(30)
-        self.btSendValidation.disabled = False
 
 
         

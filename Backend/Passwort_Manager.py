@@ -185,6 +185,14 @@ class Passwort_Manager:
             print ("failed to send mail")
 
 
+    #Check String for Password
+    def checkPW(self, password):
+        if self.loggedin:
+            if self.fernetObj.decrypt(self.CSVasList.loc[0]["Password"]) == bytes(password, encoding="utf-8"):
+                return True
+
+        return False
+    
     #Call to Login
     def login(self, username,password):
         if(self.loggedin==True):
@@ -300,18 +308,14 @@ class Passwort_Manager:
     def getAvatarPath(self):
         if not self.loggedin:
             return "Img\\sicher.png"
-         
-        if not pd.isnull(self.CSVasList.loc[0]["ImgPath"]):
-            return self.fernetObj.decrypt(self.CSVasList.loc[0]["ImgPath"]).decode()
-        
+        try:
+            if not pd.isnull(self.CSVasList.loc[0]["ImgPath"]):
+                return self.fernetObj.decrypt(self.CSVasList.loc[0]["ImgPath"]).decode()
+        except:
+            return "Img\\sicher.png"
+            
         return "Img\\sicher.png"
     
-    def setAvatarPath(self, value):
-        if self.loggedin:
-            imgPath_ = self.fernetObj.encrypt(bytes(value, encoding="utf-8")).decode()
-            self.CSVasList.loc[0]["ImgPath"] = imgPath_
-            self.__WriteCSV()
-            
 
     def getCurrentEmail(self):
         if not self.loggedin:

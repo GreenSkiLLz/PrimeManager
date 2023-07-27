@@ -1585,6 +1585,7 @@
     validationstatus:validationstatus
     tfsetnewEmail:tfsetnewEmail
     btupdateEmail:btupdateEmail
+    tfValidatenewEmailEntrywithPW:tfValidatenewEmailEntrywithPW
     btSendValidation:btSendValidation
     tfvalidateEmail:tfvalidateEmail
     btValidateEmail:btValidateEmail
@@ -1893,6 +1894,33 @@
                                                 #EVENTS
                                                 on_text:root.removeSpaces(self)
                                                 
+                                        AnchorLayout:
+                                            size_hint_x:.5
+                                            MDTextField:
+                                                #ID[   ]
+                                                id: tfValidatenewEmailEntrywithPW
+                                                #Hint text New EMail
+                                                hint_text: "Password"
+                                                hint_text_color_normal: (86/255, 197/255, 150/255, 1)
+                                                hint_text_color_focus: (86/255, 197/255, 150/255, 1)
+
+                                                #Error Text EMail
+                                                helper_text: "Wrong Password"
+                                                helper_text_mode: "on_error"
+
+                                                #DESIGN
+                                                text_color_focus: (207/255, 244/255, 210/255, 1)
+                                                line_color_focus: (86/255, 197/255, 150/255, 1)
+                                                
+                                                write_tab:False
+                                                size_hint_x: None
+                                                width: 300
+                                                font_size: 18
+                                                password:True
+                                                halign: 'center'
+
+                                                #EVENTS
+                                                on_text:root.removeSpaces(self)
 
                                         AnchorLayout:  
                                             size_hint_x:.25  
@@ -1909,7 +1937,7 @@
                                                 shadow_color: (33/255, 33/255, 33/255, 0)
 
                                                 #EVENTS
-                                                on_press:root.validateNewEmail()
+                                                on_press:root.changeEmail()
                                     
                                     #Validate Email
                                     BoxLayout:
@@ -1984,8 +2012,8 @@
                                                 
                                                 #EVENTS
                                                 on_press: root.checkValidationCode()
-                                                
-                                        
+
+                                    
 
 
                         

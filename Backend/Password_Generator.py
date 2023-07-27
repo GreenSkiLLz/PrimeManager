@@ -1,5 +1,6 @@
 import string
 import random
+import time
 class Password_Generator():
     def __init__(self):
         self.letters_lower = list(string.ascii_lowercase)
@@ -18,7 +19,8 @@ class Password_Generator():
             self.pickerlist.extend(self.digits)
         if cb_symbols:
             self.pickerlist.extend(self.punctuation)
-
+        
+        random.seed(time.process_time())
         random.shuffle(self.pickerlist)
         gen=""
         gen=gen.join(random.choices(self.pickerlist,k=slide_chars))
