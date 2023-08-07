@@ -20,7 +20,7 @@ from kivymd.uix.textfield import MDTextField
 from kivy.core.window import Window
 from kivy.uix.popup import Popup
 from kivy.uix.screenmanager import ScreenManager, Screen, NoTransition
-from kivy.properties import ObjectProperty, NumericProperty, StringProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivymd.app import MDApp
 from kivymd.uix.list import OneLineListItem, ImageRightWidget, ThreeLineRightIconListItem
 import win32timezone
@@ -173,20 +173,27 @@ class Login(Screen):
     
     def loadRememberme(self):
         print('UI: Loading Login Page')
-        with open("Backend\\Remember.me","r") as file:
-            self.lines = file.readlines()
-        if self.lines:
-            if self.lines[0].strip() == "True":
-                try:
-                    self.cb_rememberme.active = True
-                    self.user.text = self.lines[1]
-                    print("UI: Remember Me set to True")
-                except:
-                    print("Error while loading remember me")
+        
+        local_appdata_path = os.path.join('C:\\', 'Users', os.getlogin(), 'AppData', 'Local','PrimeManager',"Remember.me")
+        if os.path.exists(local_appdata_path):
+                
+            with open(local_appdata_path,"r") as file:
+                self.lines = file.readlines()
+            if self.lines:
+                if self.lines[0].strip() == "True":
+                    try:
+                        self.cb_rememberme.active = True
+                        self.user.text = self.lines[1]
+                        print("UI: Remember Me set to True")
+                    except:
+                        print("Error while loading remember me")
 
-            else:
-                self.cb_rememberme.active = False
-                print("UI: Remember Me set to False")
+                else:
+                    self.cb_rememberme.active = False
+                    print("UI: Remember Me set to False")
+        else:
+            with open(local_appdata_path,"w") as file:
+                file.write("")
 
     def validateText(self):
         self.user.text = str(self.user.text).replace(" ", "")
@@ -1240,8 +1247,9 @@ class Manager(ScreenManager):
 class ScreensApp(MDApp):
     def build(self):
         self.pm = Passwort_Manager()
+        
         self.icon = "Logo_512x512.png"
-        Window.shape_color_key = (0, 0, 0, 1)
+        
         self.title = 'Prime Manager'
         self.theme_cls.theme_style = "Dark"
         m = Manager(transition=NoTransition())

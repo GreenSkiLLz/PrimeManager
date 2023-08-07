@@ -325,7 +325,7 @@
                 halign: 'center'
                 size_hint_y: None
                 height: self.texture_size[1]
-                padding_y: 15
+                padding: [0,15]
 
             # Username
             MDTextField:
@@ -1128,7 +1128,7 @@
             halign: 'center'
             size_hint_y: None
             height: self.texture_size[1]
-            padding_y: 15
+            padding: [0,15]
 
         #TF Username
         MDTextField:
@@ -1315,7 +1315,7 @@
             halign: 'center'
             size_hint_y: None
             height: self.texture_size[1]
-            padding_y: 15
+            padding: [0,15]
 
         #TF Username
         MDTextField:
@@ -1416,7 +1416,7 @@
             halign: 'center'
             size_hint_y: None
             height: self.texture_size[1]
-            padding_y: 15
+            padding: [0,15]
 
         #Send Mail to... Text
         MDLabel:
@@ -1615,7 +1615,7 @@
 
             Label:
                 size_hint: 1 , 1
-                text:"Header"
+                text:""
                 font_size:23
         
         #Main Content
@@ -1822,6 +1822,7 @@
 
                                 #Current Email
                                 BoxLayout:
+                                    size_hint_x:.5
                                     orientation:"vertical"
 
                                     #Überschrift links
