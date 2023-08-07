@@ -12,12 +12,32 @@ class Passwort_Manager:
         self.loggedin=False
 
         self.userSeed=""
-        self.userFileName=""
+        self.userKeyFileName=""
+        self.userSaveFileName =""
         self.key=""
         self.fernetObj= Fernet
 
-        self.KeysPath=str(os.path.dirname( __file__ )+"\\Keys")
-        self.UserDirPath=str(os.path.dirname( __file__ )+"\\User")
+        
+        ##Depricated
+        #self.KeysPath=str(os.path.dirname( __file__ )+"\\Keys")
+        #self.UserDirPath=str(os.path.dirname( __file__ )+"\\User")
+
+        ## Use this Path in future!!!
+        #Appdata Path for user for R/W access
+        user = os.getlogin()
+        self.local_appdata_path = os.path.join('C:\\', 'Users', user, 'AppData', 'Local','PrimeManager')
+        self.KeysPath=os.path.join(self.local_appdata_path,"Keys")
+        self.UserDirPath=os.path.join(self.local_appdata_path,"User")
+        
+        if not os.path.exists(self.local_appdata_path):
+            os.makedirs(self.local_appdata_path)
+        if not os.path.exists(self.KeysPath):
+            os.makedirs(self.KeysPath)
+        if not os.path.exists(self.UserDirPath):
+            os.makedirs(self.UserDirPath)
+            
+
+
 
         self.CSVasList= pd
 
@@ -31,7 +51,7 @@ class Passwort_Manager:
         self.key=""
         for x in os.listdir(self.KeysPath):
             
-            if(str(self.userFileName+".key")==x):
+            if(str(self.userKeyFileName+".key")==x):
                 with open(self.KeysPath+"/"+x,"r") as f:
                     self.key = f.read()
 
@@ -42,7 +62,7 @@ class Passwort_Manager:
     def __checkUserexistence(self, userName):
         self.__setUserSeed(userName)
         for x in os.listdir(self.UserDirPath):
-            if(x==str(userName+".usr")):
+            if(x==str(self.userSaveFileName+".usr")):
                 return True
         return False
     
@@ -203,6 +223,7 @@ class Passwort_Manager:
             self.__readCSVAndSetCSVlist()
 
             if (self.fernetObj.decrypt(self.CSVasList.loc[0]["Password"]) == bytes(password, encoding="utf-8")):
+                
                 self.__setUserSeed(username)
                 self.__setFernetobj()
                 self.loggedin = True
@@ -216,7 +237,8 @@ class Passwort_Manager:
                 return False
 
         else:
-            print("PWM: Username oder passowrd Falsch!")
+            print(self.fernetObj.decrypt(self.CSVasList.loc[0]["Password"]))
+            print("PWM: Username oder passowrd Falsch! 01")
             return False
 
 
@@ -226,7 +248,7 @@ class Passwort_Manager:
         self.userName=""
 
         self.userSeed=""
-        self.userFileName=""
+        self.userKeyFileName=""
         self.key=""
         self.fernetObj=""
         self.CSVasList=""
@@ -241,7 +263,7 @@ class Passwort_Manager:
         if(self.__checkUserexistence(userName)==False):
             self.key = Fernet.generate_key()
             #Key File
-            with open(str(self.KeysPath+"/"+self.userFileName+".key"),"wb") as file:
+            with open(str(self.KeysPath+"/"+self.userKeyFileName+".key"),"wb") as file:
                 file.write(self.key)
 
             self.__setFernetobj()
@@ -252,7 +274,7 @@ class Passwort_Manager:
             encryptEmail = self.fernetObj.encrypt(bytes(email, encoding="utf-8"))
             encryptImg = self.fernetObj.encrypt(b"Img\\sicher.png")
             #User File
-            with open(str(self.UserDirPath+"/"+userName+".usr"),"w") as file:
+            with open(str(self.UserDirPath+"/"+self.userSaveFileName+".usr"),"w") as file:
                 file.write("PlatformName:Username:Password:Email:SecurityKey:Telephon:Link:ImgPath\n"
                            +encryptplatform.decode()+":"+encryptUserName.decode()+":"+encryptPassword.decode()+":"+encryptEmail.decode()+"::::"+encryptImg.decode())
             return True
@@ -345,8 +367,12 @@ class Passwort_Manager:
 
     def __setUserFileName(self):
         random.seed(self.userSeed)
-        self.userFileName=random.random()
-        self.userFileName = str(self.userFileName).replace("0.","")
+        self.userKeyFileName=random.random()
+        self.userKeyFileName = str(self.userKeyFileName).replace("0.","")
+        random.seed(self.userKeyFileName)
+        self.userSaveFileName = random.random()
+        self.userSaveFileName = str(self.userSaveFileName).replace("0.","")
+        print(self.userKeyFileName,self.userSaveFileName)
 
 
     def translate(self,item):
@@ -424,11 +450,13 @@ class Passwort_Manager:
             self.__WriteCSV()
 
     def __readCSVAndSetCSVlist(self):
-            path = str(self.UserDirPath + "/" + self.userSeed+ ".usr")
-            self.CSVasList = pd.read_csv(path, sep=":")
-            print("PWM: Read CSV")
+        path = os.path.join(self.UserDirPath ,str(self.userSaveFileName+ ".usr"))
+        self.CSVasList = pd.read_csv(path, sep=":")
+   
+        print("PWM: Read CSV")
 
     def __WriteCSV(self):
-        path = str(self.UserDirPath + "/" + self.userSeed + ".usr")
+        self.__setUserSeed(self.userName)
+        path = str(self.UserDirPath + "/" + self.userSaveFileName + ".usr")
         self.CSVasList.to_csv(path,index=False, sep=":")
         print("PWM: Write CSV")
