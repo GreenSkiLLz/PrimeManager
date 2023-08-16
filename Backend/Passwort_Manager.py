@@ -41,7 +41,7 @@ class Passwort_Manager:
 
         self.CSVasList= pd
 
-
+        # TFA Variables
         self.tfaUser=""
         self.currenttfaCode=""
         self.currentEmailCode=""
