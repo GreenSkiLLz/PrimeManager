@@ -23,7 +23,7 @@ a = Analysis(
 )
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
-a.datas += [('Code\screens.kv','D:\\PycharmProjects\\PrimeManager\\screens.kv','DATA')]
+a.datas += [('Code\screens.kv','E:\\VsCode_Projects\\PrimeManager\\screens.kv','DATA')]
 
 exe = EXE(
     pyz,
@@ -44,7 +44,7 @@ exe = EXE(
 )
 coll = COLLECT(
     exe,
-    Tree('D:\\PycharmProjects\\PrimeManager\\'),
+    Tree('E:\\VsCode_Projects\\PrimeManager\\'),
     a.binaries,
     a.zipfiles,
     a.datas,

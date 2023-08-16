@@ -624,7 +624,7 @@ class MainScreen(Screen):
 
         
 
-    # <editor-fold desc="Popups">
+    
     def ChangenamePopup(self, text):
 
         self.cnp = MDTextField(
@@ -789,7 +789,6 @@ class MainScreen(Screen):
 
 
 
-    # </editor-fold>
 
     #Event Runs once When Entering Main Page. Runs before Kv is Loaded
     def on_enter(self):
@@ -963,7 +962,7 @@ class MainScreen(Screen):
             self.savewarningbufferitem = item
             self.SaveingWarningPopup()
 
-    # <editor-fold desc="Right Panel Buttons">
+    #"Right Panel Buttons">
 
     #Start Edit Mode
     def editSelectedIndex(self):
@@ -1094,7 +1093,6 @@ class MainScreen(Screen):
             self.SaveingWarningPopup(which="deselect")
             print("UI: Save loss warning Popup")
 
-    # </editor-fold>
 
     #Change Screen
     def changeScreen(self):
@@ -1192,7 +1190,7 @@ class MainScreen(Screen):
             self.tf_phone.text = ""
             self.tf_link.text = ""
 
-    # <editor-fold desc="Main Panel Scoll View Editable stuff">
+    # "Main Panel Scoll View Editable stuff"
 
     #When Pressed on add or The Pen Icon to Create a Name for a new Profile or change the Existing one
     def changPlatformName(self):
@@ -1231,7 +1229,7 @@ class MainScreen(Screen):
     def generatePassword(self):
         self.GeneratePasswordPopup()
 
-    # </editor-fold>
+
 
 
 ####################################################################################
@@ -1248,7 +1246,7 @@ class ScreensApp(MDApp):
     def build(self):
         self.pm = Passwort_Manager()
         
-        self.icon = "Logo_512x512.png"
+        self.icon = "Logo\\Logo_512x512.png"
         
         self.title = 'Prime Manager'
         self.theme_cls.theme_style = "Dark"
